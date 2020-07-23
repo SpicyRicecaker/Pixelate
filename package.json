@@ -1,0 +1,27 @@
+{
+  "name": "pixelate",
+  "version": "1.0.0",
+  "description": "\u0016An app that pixelates an image",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpicyRicecaker/Pixelate.git"
+  },
+  "keywords": [
+    "pixel",
+    "pixelate"
+  ],
+  "author": "SpicyRicecaker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SpicyRicecaker/Pixelate/issues"
+  },
+  "homepage": "https://github.com/SpicyRicecaker/Pixelate#readme",
+  "devDependencies": {
+    "electron": "^9.1.1"
+  }
+}
