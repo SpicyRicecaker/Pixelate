@@ -1,0 +1,54 @@
+
+/*The wrapper class basically encompasses the main overall window*/
+.wrapper {
+    display: grid;
+    grid-template:
+    "loadfile panel panel panel pixelation" 1fr
+    "fileinfo panel panel panel pixelation" 1fr
+    "fileinfo panel panel panel outputresolution" 1fr
+    "fileinfo panel panel panel saveas" auto
+    /1fr 1fr 1fr 1fr 1fr
+    ;
+    grid-gap: 1em;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/*Applies to each individual element inside the grid*/
+.wrapper > div{
+    background-color:lightgray;
+    font-family: 'Open Sans';
+    text-align: center;
+}
+.loadFile{
+    grid-area: loadfile;
+    padding: 1em;
+}
+
+.fileInfo{
+    grid-area: fileinfo;
+    padding: 1em;
+}
+
+.mainPanel{
+    grid-area: panel;
+    font-family: Arial;
+    padding:1em;
+}
+
+.pixelation{
+    grid-area: pixelation;
+    padding:1em;
+}
+
+.outputResolution{
+    grid-area: outputresolution;
+    padding:1em;
+}
+
+.saveAs{
+    grid-area: saveas;
+    padding: 1em;
+}
