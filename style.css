@@ -1,6 +1,10 @@
+body {
+    background-color: #2b2b2b;
+}
 
 /*The wrapper class basically encompasses the main overall window*/
 .wrapper {
+    /* background-color: #434343; */
     display: grid;
     grid-template:
     "loadfile panel panel panel pixelation" 1fr
@@ -9,7 +13,7 @@
     "fileinfo panel panel panel saveas" auto
     /1fr 1fr 1fr 1fr 1fr
     ;
-    grid-gap: 1em;
+    grid-gap: .5em;
     width: 100vw;
     height: 100vh;
     max-width: 100%;
@@ -18,8 +22,9 @@
 
 /*Applies to each individual element inside the grid*/
 .wrapper > div{
-    background-color:lightgray;
+    background-color:#434343;
     font-family: 'Open Sans';
+    color: #f3f3f3;
     text-align: center;
 }
 .loadFile{
