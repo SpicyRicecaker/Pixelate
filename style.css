@@ -1,5 +1,17 @@
 body {
     background-color: #2b2b2b;
+    font-family: "Open Sans";
+    text-align: center;
+}
+
+dl{
+    text-align:left;
+    font-size:.8em;
+}
+
+h2 {
+    font-size: 1em;
+    font-weight: normal;
 }
 
 /*The wrapper class basically encompasses the main overall window*/
@@ -7,6 +19,7 @@ body {
     /* background-color: #434343; */
     display: grid;
     grid-template:
+    "loadas panel panel panel pixelation" auto
     "loadfile panel panel panel pixelation" 1fr
     "fileinfo panel panel panel pixelation" 1fr
     "fileinfo panel panel panel outputresolution" 1fr
@@ -23,12 +36,13 @@ body {
 /*Applies to each individual element inside the grid*/
 .wrapper > div{
     background-color:#434343;
-    font-family: 'Open Sans';
     color: #f3f3f3;
-    text-align: center;
+    /* text-align: center; */
 }
+
 .loadFile{
     grid-area: loadfile;
+    display: grid;
     padding: 1em;
 }
 
@@ -53,7 +67,39 @@ body {
     padding:1em;
 }
 
-.saveAs{
+#largeButton{
     grid-area: saveas;
-    padding: 1em;
+    padding:1em;
 }
+
+#smallButton{
+    grid-area: loadas;
+    padding:1em;
+}
+
+dd {
+    background-color: #2b2b2b;
+    padding: .5em;
+}
+
+dt {
+    padding: .5em;
+}
+/* 
+#dd_name{
+}
+
+#dd_path{
+}
+
+#dd_dimensions{
+}
+
+#dd_size{
+}
+
+#dd_fileType{
+}
+
+#dd_lastModified{
+} */

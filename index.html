@@ -1,30 +1,57 @@
 <!DOCTYPE html lang="en">
+
 <head>
     <title>Pixelate</title>
     <!-- font-family: 'Open Sans', sans-serif; -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
     <div class="wrapper">
+        <input type="button" id="smallButton" value="Load File"></button>
         <div class="loadFile">
-            Drop File Here!
+            <h2>
+                Drop File Here!
+            </h2>
         </div>
         <div class="mainPanel">
-            Main Panel!
+            <h2>
+                Main Panel!
+            </h2>
         </div>
         <div class="pixelation">
-            Pixelation!
+            <h2>
+                Pixelation!
+            </h2>
         </div>
         <div class="fileInfo">
-            File Info!
+            <h2>
+                File Info!
+            </h2>
+            <dl>
+                <dt>Name:</dt>
+                    <dd id="dd_name"> N/A</dd>
+                <dt>Path:</dt>
+                    <dd id="dd_path"> N/A</dd>
+                <dt>Dimensions:</dt>
+                    <dd id="dd_dimensions"> N/A</dd>
+                <dt>Size:</dt>
+                    <dd id="dd_size"> N/A</dd>
+                <dt>File Type:</dt>
+                    <dd id="dd_fileType"> N/A</dd>
+                <dt>Last Modified:</dt>
+                    <dd id="dd_lastModified"> N/A</dd>
+            </dl>
         </div>
         <div class="outputResolution">
-            Output Resolution!
+            <h2>
+                Output Resolution!
+            </h2>
         </div>
-        <div class="saveAs">
-            Save as!
-        </div>
+        <input type="button" id="largeButton" value="Save File"></button>
     </div>
+    <script src="pixelate.js"></script>
 </body>
+
 </html>
