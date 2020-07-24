@@ -22,6 +22,11 @@
   },
   "homepage": "https://github.com/SpicyRicecaker/Pixelate#readme",
   "devDependencies": {
-    "electron": "^9.1.1"
+    "@typescript-eslint/eslint-plugin": "^3.7.0",
+    "@typescript-eslint/parser": "^3.7.0",
+    "electron": "^9.1.1",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }

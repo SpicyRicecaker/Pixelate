@@ -1,89 +1,88 @@
 body {
-    background-color: #2b2b2b;
-    font-family: "Open Sans";
-    text-align: center;
+  background-color: #2b2b2b;
+  font-family: "Open Sans";
+  text-align: center;
 }
 
-dl{
-    text-align:left;
-    font-size:.8em;
+dl {
+  text-align: left;
+  font-size: 0.8em;
 }
 
 h2 {
-    font-size: 1em;
-    font-weight: normal;
+  font-size: 1em;
+  font-weight: normal;
 }
 
 /*The wrapper class basically encompasses the main overall window*/
 .wrapper {
-    /* background-color: #434343; */
-    display: grid;
-    grid-template:
+  /* background-color: #434343; */
+  display: grid;
+  grid-template:
     "loadas panel panel panel pixelation" auto
     "loadfile panel panel panel pixelation" 1fr
     "fileinfo panel panel panel pixelation" 1fr
     "fileinfo panel panel panel outputresolution" 1fr
     "fileinfo panel panel panel saveas" auto
-    /1fr 1fr 1fr 1fr 1fr
-    ;
-    grid-gap: .5em;
-    width: 100vw;
-    height: 100vh;
-    max-width: 100%;
-    max-height: 100%;
+    / 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 0.5em;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /*Applies to each individual element inside the grid*/
-.wrapper > div{
-    background-color:#434343;
-    color: #f3f3f3;
-    /* text-align: center; */
+.wrapper > div {
+  background-color: #434343;
+  color: #f3f3f3;
+  /* text-align: center; */
 }
 
-.loadFile{
-    grid-area: loadfile;
-    display: grid;
-    padding: 1em;
+.loadFile {
+  grid-area: loadfile;
+  display: grid;
+  padding: 1em;
 }
 
-.fileInfo{
-    grid-area: fileinfo;
-    padding: 1em;
+.fileInfo {
+  grid-area: fileinfo;
+  padding: 1em;
 }
 
-.mainPanel{
-    grid-area: panel;
-    font-family: Arial;
-    padding:1em;
+.mainPanel {
+  grid-area: panel;
+  font-family: Arial;
+  padding: 1em;
 }
 
-.pixelation{
-    grid-area: pixelation;
-    padding:1em;
+.pixelation {
+  grid-area: pixelation;
+  padding: 1em;
 }
 
-.outputResolution{
-    grid-area: outputresolution;
-    padding:1em;
+.outputResolution {
+  grid-area: outputresolution;
+  padding: 1em;
 }
 
-#largeButton{
-    grid-area: saveas;
-    padding:1em;
+#largeButton {
+  grid-area: saveas;
+  padding: 1em;
 }
 
-#smallButton{
-    grid-area: loadas;
-    padding:1em;
+#smallButton {
+  grid-area: loadas;
+  padding: 1em;
 }
 
 dd {
-    background-color: #2b2b2b;
-    padding: .5em;
+  background-color: #2b2b2b;
+  padding: 0.5em;
 }
 
 dt {
-    padding: .5em;
+  padding: 0.5em;
 }
 /* 
 #dd_name{
