@@ -1,6 +1,6 @@
 body {
   background-color: #2b2b2b;
-  font-family: "Open Sans";
+  font-family: 'Open Sans';
   text-align: center;
 }
 
@@ -16,14 +16,14 @@ h2 {
 
 /*The wrapper class basically encompasses the main overall window*/
 .wrapper {
-  /* background-color: #434343; */
   display: grid;
+  /* background-color: #434343; */
   grid-template:
-    "loadas panel panel panel pixelation" auto
-    "loadfile panel panel panel pixelation" 1fr
-    "fileinfo panel panel panel pixelation" 1fr
-    "fileinfo panel panel panel outputresolution" 1fr
-    "fileinfo panel panel panel saveas" auto
+    'loadas panel panel panel pixelation' auto
+    'loadfile panel panel panel pixelation' 1fr
+    'fileinfo panel panel panel pixelation' 1fr
+    'fileinfo panel panel panel outputresolution' 1fr
+    'fileinfo panel panel panel saveas' auto
     / 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 0.5em;
   width: 100vw;
@@ -50,10 +50,12 @@ h2 {
   padding: 1em;
 }
 
-.mainPanel {
+#container {
   grid-area: panel;
-  font-family: Arial;
-  padding: 1em;
+  text-align: initial;
+}
+
+#mainPanel {
 }
 
 .pixelation {
@@ -84,21 +86,3 @@ dd {
 dt {
   padding: 0.5em;
 }
-/* 
-#dd_name{
-}
-
-#dd_path{
-}
-
-#dd_dimensions{
-}
-
-#dd_size{
-}
-
-#dd_fileType{
-}
-
-#dd_lastModified{
-} */

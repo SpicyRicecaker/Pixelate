@@ -1,3 +1,8 @@
+let width;
+let height;
+// Canvas
+const canvas = document.getElementById('mainPanel');
+const ctx = canvas.getContext('2d');
 // Other specifications here
 // Node js filesystem
 const fs = require('fs');
@@ -5,6 +10,27 @@ const fs = require('fs');
 const path = require('path');
 // Dialog, for file explorer, .remote at the end if not in main
 const { dialog } = require('electron').remote;
+
+function resizeCanvas() {
+  const con = document.getElementById('container');
+  canvas.width = con.offsetWidth;
+  width = canvas.width;
+  canvas.height = con.offsetHeight;
+  height = canvas.height;
+  console.log(width);
+  console.log(canvas.width);
+  console.log(document.getElementById('container').offsetWidth);
+}
+
+function init() {
+  // Resize the canvas to the desired width and height
+  resizeCanvas();
+  // Just some debug for now!
+  ctx.beginPath();
+  ctx.strokeStyle = 'blue';
+  ctx.fillRect(0, 0, 200, 100);
+  ctx.closePath();
+}
 
 function roundTo(num, place) {
   let temp = num * place;
@@ -47,6 +73,14 @@ function updateFileInfo(filePath) {
 
 function readFile() {
   console.log('Read file will come later!');
+  // Our program must fulfill these steps:
+  // 1. We must first be able to resize the image to a desired desktop resolution
+  // 2. We then must pixelate it by a certain amount
+  // 3. We then must be able to save the image
+  // Because we are actually processing the image through pixelation, we can't
+  // actually just directly show the image through html
+  // Safer is to just draw the pixels of an image on canvas.
+  // So, let's use a canvas?
 }
 
 // When the user clicks on the button...
@@ -99,3 +133,10 @@ document.getElementById('smallButton').addEventListener(
   false,
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
+init();
+
+function onResize() {
+  resizeCanvas();
+}
+
+window.addEventListener('resize', onResize);
