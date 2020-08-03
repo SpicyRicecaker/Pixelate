@@ -10,6 +10,49 @@ const fs = require('fs');
 const path = require('path');
 // Dialog, for file explorer, .remote at the end if not in main
 const { dialog } = require('electron').remote;
+// Loaded filepath
+let filePath;
+// Actual loaded image
+let loadedImage;
+
+function renderImage() {
+  if (loadedImage === undefined) {
+    return;
+  }
+  let resultImageWidth;
+  let resultImageHeight;
+  let scale;
+  // To figure out which way we scale the image, we need to compare the two aspect ratios
+  const canvasRatio = width / height;
+  const imageRatio = loadedImage.naturalWidth / loadedImage.naturalHeight;
+  // If height of canvas is greater than height of image
+  if (canvasRatio < imageRatio) {
+    // If width of canvas is greater than width of image
+    // Scale width of image
+    resultImageWidth = width;
+    // Figure out scale
+    scale = width / loadedImage.naturalWidth;
+    // Multiply height to account
+    resultImageHeight = loadedImage.naturalHeight * scale;
+  } else {
+    // Scale height of image
+    resultImageHeight = height;
+    // Figure out scale
+    scale = height / loadedImage.naturalHeight;
+    // Multiply width to account
+    resultImageWidth = loadedImage.naturalWidth * scale;
+  }
+  // Find the offset dx and dy needed to center image
+  const dx = (width - resultImageWidth) / 2;
+  const dy = (height - resultImageHeight) / 2;
+  ctx.drawImage(loadedImage, dx, dy, resultImageWidth, resultImageHeight);
+}
+function render() {
+  // Clear canvas
+  ctx.clearRect(0, 0, width, height);
+  // Render current loaded image in canvas
+  renderImage();
+}
 
 function resizeCanvas() {
   const con = document.getElementById('container');
@@ -17,19 +60,6 @@ function resizeCanvas() {
   width = canvas.width;
   canvas.height = con.offsetHeight;
   height = canvas.height;
-  console.log(width);
-  console.log(canvas.width);
-  console.log(document.getElementById('container').offsetWidth);
-}
-
-function init() {
-  // Resize the canvas to the desired width and height
-  resizeCanvas();
-  // Just some debug for now!
-  ctx.beginPath();
-  ctx.strokeStyle = 'blue';
-  ctx.fillRect(0, 0, 200, 100);
-  ctx.closePath();
 }
 
 function roundTo(num, place) {
@@ -38,8 +68,8 @@ function roundTo(num, place) {
   return temp;
 }
 
-function updateFileInfo(filePath) {
-  // Get actual string
+function updateFileInfo() {
+  // Get actual file path as string
   const fileName = filePath[0];
 
   // Get & set file name
@@ -49,7 +79,9 @@ function updateFileInfo(filePath) {
   // Set path string
   document.getElementById('dd_path').innerHTML = fileName;
 
-  // Image dimensions hard to do lol, requires dependencies, which we're trying to write ourselves
+  // Image dimensions can be gathered from image
+  const ddDimensions = `${loadedImage.naturalWidth} x ${loadedImage.naturalHeight}`;
+  document.getElementById('dd_dimensions').innerHTML = ddDimensions;
 
   // Size of file
   const fileStats = fs.statSync(fileName);
@@ -71,8 +103,24 @@ function updateFileInfo(filePath) {
   document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
 }
 
+function loadImage() {
+  if (filePath === undefined) {
+    return;
+  }
+  // Creating the canvas element
+  // canvas = document.createElement('mainPanel');
+  // Load the html image (I wonder if you can also load it exclusively in javascript)
+  loadedImage = new Image();
+  loadedImage.onload = function onloadImage() {
+    // We have to resize image size to canvas width or height
+    render();
+    // Display some information about the file
+    updateFileInfo();
+  };
+  loadedImage.src = filePath;
+}
+
 function readFile() {
-  console.log('Read file will come later!');
   // Our program must fulfill these steps:
   // 1. We must first be able to resize the image to a desired desktop resolution
   // 2. We then must pixelate it by a certain amount
@@ -112,14 +160,14 @@ document.getElementById('smallButton').addEventListener(
     };
     // Show window popup dialog
     // Retreve string of file, that is a image file type
-    const filePath = dialog.showOpenDialogSync(options);
+    filePath = dialog.showOpenDialogSync(options);
 
     // If a file was actually retrieved
     if (filePath !== undefined) {
-      // We need to display some information about the file
-      updateFileInfo(filePath);
-      // Then read the actual image (is jpg different from png????)
+      // Read the actual image (must account for jpg png diff????)
       readFile();
+      // Update the loaded image
+      loadImage();
     }
     // finally, you can also add a browserWindow as a parameter to showOpenDialog()
     // which attaches to a parent window and makes it modal
@@ -133,10 +181,21 @@ document.getElementById('smallButton').addEventListener(
   false,
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
-init();
 
 function onResize() {
   resizeCanvas();
+  render();
 }
 
 window.addEventListener('resize', onResize);
+
+function init() {
+  // The initial loading of the image into the canvas
+  loadImage();
+  // Resize the canvas to the desired width and height
+  resizeCanvas();
+  // Drars the image
+  render();
+}
+
+init();

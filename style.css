@@ -1,12 +1,11 @@
+html {
+  overflow-y: overlay;
+}
+
 body {
   background-color: #2b2b2b;
   font-family: 'Open Sans';
   text-align: center;
-}
-
-dl {
-  text-align: left;
-  font-size: 0.8em;
 }
 
 h2 {
@@ -14,17 +13,39 @@ h2 {
   font-weight: normal;
 }
 
+h3 {
+  /* Text stuff */
+  font-weight: normal;
+  font-size: 0.7em;
+  text-align: left;
+
+  /* Margin */
+  margin: 0;
+}
+
+p {
+  /* Padding & styling */
+  background-color: #2b2b2b;
+  padding: 0.5em;
+  margin: 0.2em;
+
+  /* Text stuff */
+  text-align: left;
+  font-size: 0.7em;
+  word-wrap: break-word;
+}
+
 /*The wrapper class basically encompasses the main overall window*/
 .wrapper {
   display: grid;
   /* background-color: #434343; */
   grid-template:
-    'loadas panel panel panel pixelation' auto
-    'loadfile panel panel panel pixelation' 1fr
-    'fileinfo panel panel panel pixelation' 1fr
-    'fileinfo panel panel panel outputresolution' 1fr
-    'fileinfo panel panel panel saveas' auto
-    / 1fr 1fr 1fr 1fr 1fr;
+    'loadas panel panel panel pixelation' 8%
+    'loadfile panel panel panel pixelation' minmax(0, 1fr)
+    'fileinfo panel panel panel pixelation' minmax(0, 1fr)
+    'fileinfo panel panel panel outputresolution' minmax(0, 1fr)
+    'fileinfo panel panel panel saveas' 8%
+    / minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 0.5em;
   width: 100vw;
   height: 100vh;
@@ -76,13 +97,4 @@ h2 {
 #smallButton {
   grid-area: loadas;
   padding: 1em;
-}
-
-dd {
-  background-color: #2b2b2b;
-  padding: 0.5em;
-}
-
-dt {
-  padding: 0.5em;
 }
