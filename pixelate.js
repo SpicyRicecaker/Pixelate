@@ -3,6 +3,7 @@ let height;
 // Canvas
 const canvas = document.getElementById('mainPanel');
 const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 // Other specifications here
 // Node js filesystem
 const fs = require('fs');
