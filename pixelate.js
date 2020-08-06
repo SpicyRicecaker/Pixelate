@@ -1,7 +1,7 @@
 let width;
 let height;
 // Canvas
-const canvas = document.getElementById('mainPanel');
+const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 // Other specifications here
@@ -15,6 +15,8 @@ const { dialog } = require('electron').remote;
 let filePath;
 // Actual loaded image
 let loadedImage;
+// Actual modified verson of said loaded image
+let unloadedImage;
 
 function renderImage() {
   if (loadedImage === undefined) {
@@ -69,6 +71,10 @@ function roundTo(num, place) {
   return temp;
 }
 
+function getFileType(someFilePath) {
+  return path.basename(someFilePath[0]).split('.').pop();
+}
+
 function updateFileInfo() {
   // Get actual file path as string
   const fileName = filePath[0];
@@ -104,32 +110,67 @@ function updateFileInfo() {
   document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
 }
 
-function loadImage() {
-  if (filePath === undefined) {
-    return;
+function exportImage() {
+  console.log('Now exporting image..');
+  unloadedImage = new Image();
+  // Match output source to image
+  let fileType;
+  switch (getFileType(filePath)) {
+    case 'png':
+      fileType = 'png';
+      break;
+    case 'jpg':
+      fileType = 'jpg';
+      break;
+    case 'jpeg':
+      fileType = 'jpeg';
+      break;
+    default:
+      console.log('Sorry, a program error occured');
+      return;
   }
-  // Creating the canvas element
-  // canvas = document.createElement('mainPanel');
-  // Load the html image (I wonder if you can also load it exclusively in javascript)
-  loadedImage = new Image();
-  loadedImage.onload = function onloadImage() {
-    // We have to resize image size to canvas width or height
-    render();
-    // Display some information about the file
-    updateFileInfo();
-  };
-  loadedImage.src = filePath;
+  // --Export to image file!~
+  unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
+  // Add it to the darn docccc!!!
+  document.getElementById('container').appendChild(unloadedImage);
 }
 
-function readFile() {
-  // Our program must fulfill these steps:
-  // 1. We must first be able to resize the image to a desired desktop resolution
-  // 2. We then must pixelate it by a certain amount
-  // 3. We then must be able to save the image
-  // Because we are actually processing the image through pixelation, we can't
-  // actually just directly show the image through html
-  // Safer is to just draw the pixels of an image on canvas.
-  // So, let's use a canvas?
+function drawImageToCanvas() {
+  // Set canvas size to, of course, match image size (entire
+  // point of this conversion to images)
+  canvas.height = loadedImage.height;
+  canvas.width = loadedImage.width;
+  ctx.drawImage(loadedImage, 0, 0);
+}
+
+function pixelateImage() {
+  console.log(
+    "Will pixelate the image in the very near future, for now we're just messing around",
+  );
+  // For now draw a rectangle on the top left corner
+  ctx.beginPath();
+  ctx.fillStyle = 'green';
+  ctx.fillRect(0, 0, 100, 100);
+  ctx.closePath();
+}
+
+function loadDrawAndExportImage() {
+  // 1. Create the canvas element (doing it globally for now)
+  // canvas = document.createElement('mainPanel');
+  // 2. Load the image in html to do other things with it!
+  loadedImage = new Image();
+  loadedImage.onload = function onloadImage() {
+    // 2.5. Remove the previous pic!
+    document.getElementById('panelImage').remove();
+    // 3. First we should draw the contents of the image
+    // onto a canvas
+    drawImageToCanvas();
+    // 4. Modify the canvas as needed!
+    pixelateImage();
+    // 5. Export the image from the canvas!
+    exportImage();
+  };
+  loadedImage.src = filePath;
 }
 
 // When the user clicks on the button...
@@ -165,10 +206,15 @@ document.getElementById('smallButton').addEventListener(
 
     // If a file was actually retrieved
     if (filePath !== undefined) {
-      // Read the actual image (must account for jpg png diff????)
-      readFile();
-      // Update the loaded image
-      loadImage();
+      // Load the image onto the window (so that it can be loaded
+      // Onto the canvas)
+      // Draw it on an invisible canvas (so that the pixels on the
+      // canvas can be manipulated)
+      // Export the image to the html (making sure to resize the
+      // image appropriately on resize!)
+      loadDrawAndExportImage();
+      // Finally, update file info once the image is loaded
+      updateFileInfo();
     }
     // finally, you can also add a browserWindow as a parameter to showOpenDialog()
     // which attaches to a parent window and makes it modal
@@ -191,12 +237,7 @@ function onResize() {
 window.addEventListener('resize', onResize);
 
 function init() {
-  // The initial loading of the image into the canvas
-  loadImage();
-  // Resize the canvas to the desired width and height
-  resizeCanvas();
-  // Drars the image
-  render();
+  // Literally this function is not needed I don't think
 }
 
 init();
