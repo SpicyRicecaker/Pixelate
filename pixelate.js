@@ -131,6 +131,8 @@ function exportImage() {
   }
   // --Export to image file!~
   unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
+  // Now we need to resize this image to fit the container???
+
   // Add it to the darn docccc!!!
   document.getElementById('container').appendChild(unloadedImage);
 }
@@ -172,8 +174,68 @@ function loadDrawAndExportImage() {
   };
   loadedImage.src = filePath;
 }
+// When the user clicks on the save file button, open a dialog
+// and save the current image
+document.getElementById('largeButton').addEventListener('click', () => {
+  if (unloadedImage === undefined) {
+    return;
+  }
+  const options = {
+    title: 'Save File',
+    buttonLabel: 'Save File',
+    filters: [
+      {
+        name: 'Portable Network Graphics',
+        extensions: ['jpg'],
+      },
+    ],
+    properties: ['showOverwriteConfirm', 'createDirectory'],
+  };
+  // Change filters accordingly
+  // (Kinda useless cause we know we're gonna use PNG for pixel art)
+  /*
+  switch (getFileType(filePath)) {
+    case 'png':
+      options.filters = [
+        {
+          name: 'Portable Network Graphics',
+          extensions: ['png'],
+        },
+      ];
+      break;
+    case 'jpg':
+      options.filters = [
+        {
+          name: 'Joint Photographic Group',
+          extensions: ['jpg'],
+        },
+      ];
+      break;
+    case 'jpeg':
+      options.filters = [
+        {
+          name: 'Joint Photographic Experts Group',
+          extensions: ['jpeg'],
+        },
+      ];
+      break;
+    default:
+      console.log('Sorry, a program error occured');
+      return;
+  }
+  */
 
-// When the user clicks on the button...
+  // Retrieve the file path to save something to
+  const saveFilePath = dialog.showSaveDialogSync(options);
+  // If a valid file path was actually named
+  if (saveFilePath !== undefined) {
+    // Write the darn file
+    fs.writeFileSync(saveFilePath, canvas.toDataURL('image/jpg'));
+  }
+});
+
+// When the user clicks on the load file button, open a dialog
+// and load the image
 document.getElementById('smallButton').addEventListener(
   'click',
   () => {
