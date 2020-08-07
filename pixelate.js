@@ -114,23 +114,28 @@ function exportImage() {
   console.log('Now exporting image..');
   unloadedImage = new Image();
   // Match output source to image
-  let fileType;
-  switch (getFileType(filePath)) {
-    case 'png':
-      fileType = 'png';
-      break;
-    case 'jpg':
-      fileType = 'jpg';
-      break;
-    case 'jpeg':
-      fileType = 'jpeg';
-      break;
-    default:
-      console.log('Sorry, a program error occured');
-      return;
-  }
+  // let fileType;
+  // switch (getFileType(filePath)) {
+  //   case 'png':
+  //     fileType = 'png';
+  //     break;
+  //   case 'jpg':
+  //     fileType = 'jpg';
+  //     break;
+  //   case 'jpeg':
+  //     fileType = 'jpeg';
+  //     break;
+  //   default:
+  //     console.log('Sorry, a program error occured');
+  //     return;
+  // }
   // --Export to image file!~
-  unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
+  // unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
+
+  // Since we are pixelating the file, a png makes 1000 times
+  // more sense lol
+  unloadedImage.src = canvas.toDataURL('image/png');
+
   // Now we need to resize this image to fit the container???
 
   // Add it to the darn docccc!!!
@@ -186,7 +191,7 @@ document.getElementById('largeButton').addEventListener('click', () => {
     filters: [
       {
         name: 'Portable Network Graphics',
-        extensions: ['jpg'],
+        extensions: ['png'],
       },
     ],
     properties: ['showOverwriteConfirm', 'createDirectory'],
@@ -229,8 +234,22 @@ document.getElementById('largeButton').addEventListener('click', () => {
   const saveFilePath = dialog.showSaveDialogSync(options);
   // If a valid file path was actually named
   if (saveFilePath !== undefined) {
+    // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
+    // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE
+    // THAT A PNG IMAGE IS JUST A BASE64 STRING AND THAT YOU
+    // GOTTA REMOVE THE FILLER AND THEN YOU CAN USE IT AS DATA
+    // HAHHAHAHAHAHAHAHAHAHHAh
+    const data = unloadedImage.src.replace('data:image/png;base64,', '');
+    // console.log(unloadedImage.src);
+    // console.log(data);
+    // Apparently 'new Buffer' is deprecated
+    const imageBuffer = Buffer.from(data, 'base64');
+    fs.writeFileSync(saveFilePath, imageBuffer);
     // Write the darn file
-    fs.writeFileSync(saveFilePath, canvas.toDataURL('image/jpg'));
+    // const a = document.createElement('a');
+    // a.href = canvas.toDataURL('image/jpg');
+    // a.download = 'zerozerozero.jpg';
+    // a.click();
   }
 });
 
