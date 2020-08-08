@@ -1,5 +1,5 @@
-let width;
-let height;
+// let width;
+// let height;
 // Canvas
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
@@ -18,38 +18,39 @@ let loadedImage;
 // Actual modified verson of said loaded image
 let unloadedImage;
 
-function renderImage() {
-  if (loadedImage === undefined) {
-    return;
-  }
-  let resultImageWidth;
-  let resultImageHeight;
-  let scale;
-  // To figure out which way we scale the image, we need to compare the two aspect ratios
-  const canvasRatio = width / height;
-  const imageRatio = loadedImage.naturalWidth / loadedImage.naturalHeight;
-  // If height of canvas is greater than height of image
-  if (canvasRatio < imageRatio) {
-    // If width of canvas is greater than width of image
-    // Scale width of image
-    resultImageWidth = width;
-    // Figure out scale
-    scale = width / loadedImage.naturalWidth;
-    // Multiply height to account
-    resultImageHeight = loadedImage.naturalHeight * scale;
-  } else {
-    // Scale height of image
-    resultImageHeight = height;
-    // Figure out scale
-    scale = height / loadedImage.naturalHeight;
-    // Multiply width to account
-    resultImageWidth = loadedImage.naturalWidth * scale;
-  }
-  // Find the offset dx and dy needed to center image
-  const dx = (width - resultImageWidth) / 2;
-  const dy = (height - resultImageHeight) / 2;
-  ctx.drawImage(loadedImage, dx, dy, resultImageWidth, resultImageHeight);
-}
+// Scrapped in favor of css implementation!
+// function renderImage() {
+//   if (loadedImage === undefined) {
+//     return;
+//   }
+//   let resultImageWidth;
+//   let resultImageHeight;
+//   let scale;
+//   // To figure out which way we scale the image, we need to compare the two aspect ratios
+//   const canvasRatio = width / height;
+//   const imageRatio = loadedImage.naturalWidth / loadedImage.naturalHeight;
+//   // If height of canvas is greater than height of image
+//   if (canvasRatio < imageRatio) {
+//     // If width of canvas is greater than width of image
+//     // Scale width of image
+//     resultImageWidth = width;
+//     // Figure out scale
+//     scale = width / loadedImage.naturalWidth;
+//     // Multiply height to account
+//     resultImageHeight = loadedImage.naturalHeight * scale;
+//   } else {
+//     // Scale height of image
+//     resultImageHeight = height;
+//     // Figure out scale
+//     scale = height / loadedImage.naturalHeight;
+//     // Multiply width to account
+//     resultImageWidth = loadedImage.naturalWidth * scale;
+//   }
+//   // Find the offset dx and dy needed to center image
+//   const dx = (width - resultImageWidth) / 2;
+//   const dy = (height - resultImageHeight) / 2;
+//   ctx.drawImage(loadedImage, dx, dy, resultImageWidth, resultImageHeight);
+// }
 // function render() {
 //   // Clear canvas
 //   ctx.clearRect(0, 0, width, height);
@@ -110,6 +111,7 @@ function updateFileInfo() {
   document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
 }
 
+// Takes the canvas and turns it into an image
 function exportImage() {
   unloadedImage = new Image();
   unloadedImage.onload = function onDisplayImage() {
