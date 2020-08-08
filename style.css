@@ -1,16 +1,27 @@
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('fonts/LEMONMILK-Regular.otf');
+}
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('fonts/coolvetica\ rg.ttf');
+}
 html {
+  /* Makes the scrollbar an overlaw so the elements aren't affected */
   overflow-y: overlay;
 }
 
 body {
   background-color: #2b2b2b;
-  font-family: 'Open Sans';
+  font-family: 'Lemon Milk';
   text-align: center;
 }
 
 h2 {
   font-size: 1em;
   font-weight: normal;
+  /* DEBUG FOR NOW */
+  background-color: #e06666;
 }
 
 h3 {
@@ -62,7 +73,7 @@ p {
 
 .loadFile {
   grid-area: loadfile;
-  display: grid;
+  /* display: grid; */
   padding: 1em;
 }
 
@@ -85,9 +96,12 @@ p {
   max-height: 100%;
 }
 
-.pixelation {
+#pixelation {
   grid-area: pixelation;
   padding: 1em;
+  /* Scuffed but decreases the size of h2 so worth */
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .outputResolution {
@@ -95,12 +109,30 @@ p {
   padding: 1em;
 }
 
+#sliderContainer {
+}
+
+#pixelationSlider {
+  /* Makes slider vertical */
+  -webkit-appearance: slider-vertical;
+  /* Makes slider height max container*/
+  height: 100%;
+  /* Gets rid of annoying default white outline */
+  outline: none;
+}
+
 #largeButton {
   grid-area: saveas;
   padding: 1em;
+  /* Font stuff, for some reason body styling doesn't affect buttons */
+  font-family: 'Lemon Milk';
+  font-size: 1em;
 }
 
 #smallButton {
   grid-area: loadas;
   padding: 1em;
+  /* Font stuff */
+  font-family: 'Lemon Milk';
+  font-size: 1em;
 }

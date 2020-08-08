@@ -153,15 +153,9 @@ function drawImageToCanvas() {
   ctx.drawImage(loadedImage, 0, 0);
 }
 
+// Here is the actual smart coding happening
 function pixelateImage() {
-  console.log(
-    "Will pixelate the image in the very near future, for now we're just messing around",
-  );
-  // For now draw a rectangle on the top left corner
-  ctx.beginPath();
-  ctx.fillStyle = 'green';
-  ctx.fillRect(0, 0, 100, 100);
-  ctx.closePath();
+  console.log('hi');
 }
 
 function loadDrawAndExportImage() {

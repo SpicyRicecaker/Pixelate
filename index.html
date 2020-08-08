@@ -12,17 +12,20 @@
         <input type="button" id="smallButton" value="Load File"></button>
         <div class="loadFile">
             <h2>
-                Drop File Here!
+                Drop File!
             </h2>
         </div>
         <div id="container">
-            <img id="panelImage"/>
+            <img id="panelImage">
             <!-- <canvas id="mainPanel"></canvas> -->
         </div>
-        <div class="pixelation">
+        <div id="pixelation">
             <h2>
                 Pixelation!
             </h2>
+            <div id="sliderContainer">
+                <input type="range" min="1" max="100" id="pixelationSlider">
+            </div>
         </div>
         <div class="fileInfo">
             <h2>
@@ -43,7 +46,7 @@
         </div>
         <div class="outputResolution">
             <h2>
-                Output Resolution!
+                Output Res!
             </h2>
         </div>
         <input type="button" id="largeButton" value="Save File"></button>
