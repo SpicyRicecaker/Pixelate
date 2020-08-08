@@ -50,20 +50,20 @@ function renderImage() {
   const dy = (height - resultImageHeight) / 2;
   ctx.drawImage(loadedImage, dx, dy, resultImageWidth, resultImageHeight);
 }
-function render() {
-  // Clear canvas
-  ctx.clearRect(0, 0, width, height);
-  // Render current loaded image in canvas
-  renderImage();
-}
+// function render() {
+//   // Clear canvas
+//   ctx.clearRect(0, 0, width, height);
+//   // Render current loaded image in canvas
+//   renderImage();
+// }
 
-function resizeCanvas() {
-  const con = document.getElementById('container');
-  canvas.width = con.offsetWidth;
-  width = canvas.width;
-  canvas.height = con.offsetHeight;
-  height = canvas.height;
-}
+// function resizeCanvas() {
+//   const con = document.getElementById('container');
+//   canvas.width = con.offsetWidth;
+//   width = canvas.width;
+//   canvas.height = con.offsetHeight;
+//   height = canvas.height;
+// }
 
 function roundTo(num, place) {
   let temp = num * place;
@@ -71,9 +71,9 @@ function roundTo(num, place) {
   return temp;
 }
 
-function getFileType(someFilePath) {
-  return path.basename(someFilePath[0]).split('.').pop();
-}
+// function getFileType(someFilePath) {
+//   return path.basename(someFilePath[0]).split('.').pop();
+// }
 
 function updateFileInfo() {
   // Get actual file path as string
@@ -111,8 +111,14 @@ function updateFileInfo() {
 }
 
 function exportImage() {
-  console.log('Now exporting image..');
   unloadedImage = new Image();
+  unloadedImage.onload = function onDisplayImage() {
+    // Now we need to resize this image to fit the container???
+    // resizeImage();
+    unloadedImage.setAttribute('id', 'panelImage');
+    // Add it to the darn docccc!!!
+    document.getElementById('container').appendChild(unloadedImage);
+  };
   // Match output source to image
   // let fileType;
   // switch (getFileType(filePath)) {
@@ -135,18 +141,13 @@ function exportImage() {
   // Since we are pixelating the file, a png makes 1000 times
   // more sense lol
   unloadedImage.src = canvas.toDataURL('image/png');
-
-  // Now we need to resize this image to fit the container???
-
-  // Add it to the darn docccc!!!
-  document.getElementById('container').appendChild(unloadedImage);
 }
 
 function drawImageToCanvas() {
   // Set canvas size to, of course, match image size (entire
   // point of this conversion to images)
-  canvas.height = loadedImage.height;
-  canvas.width = loadedImage.width;
+  canvas.height = loadedImage.naturalHeight;
+  canvas.width = loadedImage.naturalWidth;
   ctx.drawImage(loadedImage, 0, 0);
 }
 
@@ -167,6 +168,9 @@ function loadDrawAndExportImage() {
   // 2. Load the image in html to do other things with it!
   loadedImage = new Image();
   loadedImage.onload = function onloadImage() {
+    // 2.5.5 We need to update the file info here
+    // as we're literally removing the image right after
+    updateFileInfo();
     // 2.5. Remove the previous pic!
     document.getElementById('panelImage').remove();
     // 3. First we should draw the contents of the image
@@ -294,8 +298,6 @@ document.getElementById('smallButton').addEventListener(
       // Export the image to the html (making sure to resize the
       // image appropriately on resize!)
       loadDrawAndExportImage();
-      // Finally, update file info once the image is loaded
-      updateFileInfo();
     }
     // finally, you can also add a browserWindow as a parameter to showOpenDialog()
     // which attaches to a parent window and makes it modal
@@ -310,12 +312,9 @@ document.getElementById('smallButton').addEventListener(
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
 
-function onResize() {
-  resizeCanvas();
-  render();
-}
+// function onResize() {}
 
-window.addEventListener('resize', onResize);
+// window.addEventListener('resize', onResize);
 
 function init() {
   // Literally this function is not needed I don't think
