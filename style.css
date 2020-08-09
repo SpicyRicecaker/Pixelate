@@ -110,15 +110,48 @@ p {
 }
 
 #sliderContainer {
+  padding: 1em;
+  background-color: lightblue;
 }
 
+/* The actual slider in its length */
 #pixelationSlider {
-  /* Makes slider vertical */
-  -webkit-appearance: slider-vertical;
-  /* Makes slider height max container*/
-  height: 100%;
-  /* Gets rid of annoying default white outline */
+  /* Overrides the default styling */
+  -webkit-appearance: none;
+  /* Length and width of the slider */
+  width: 100%;
+  height: 1em;
+  /* Rounds off the edges of the slider*/
+  /* border-radius: 1px; */
+  /* Sets the background color of the slider */
+  background: #f3f3f3;
+  /* Gets rid of outline surrounding the slider when selected */
   outline: none;
+  /* Setting up for the hover animation */
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+  /* Change it to vertical somehow... */
+  transform: rotate(270deg);
+}
+
+#pixelationSlider:hover {
+  opacity: 1;
+}
+
+/* The handle/part you can drag of slider*/
+#pixelationSlider::-webkit-slider-thumb {
+  /* Overrides the default styling */
+  -webkit-appearance: none;
+  /* Idk what the diff is here, need exp */
+  appearance: none;
+  /* Dimensions of handle */
+  width: 1.5em;
+  height: 1.5em;
+  /* Rounds out the slider */
+  /* border-radius: 50%; */
+  background: #e06666;
+  cursor: pointer;
 }
 
 #largeButton {
