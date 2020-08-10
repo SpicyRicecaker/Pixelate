@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('fonts/LEMONMILK-Regular.otf');
+}
+
 body {
   /* margin: 0; */
   /* padding: 0; */
@@ -6,6 +11,12 @@ body {
   /* display: flex;
   align-items: center;
   justify-content: center; */
+}
+
+h2 {
+  font-family: 'Lemon Milk';
+  background-color: #e06666;
+  text-align: center;
 }
 
 #wrapper {
@@ -25,14 +36,20 @@ body {
   color: white;
 }
 
+#pixelationHeading {
+}
+
 #rangeContainer {
   margin: 0;
   padding: 0;
   background-color: lightblue;
+  /* Make content take up full width? */
+  flex-basis: 50%;
   /* Centers */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 /* The actual slider in its length */
@@ -40,7 +57,7 @@ body {
   /* Overrides the default styling */
   -webkit-appearance: none;
   /* Length and width of the slider */
-  width: 100%;
+  width: 500px;
   height: 1em;
   /* Rounds off the edges of the slider*/
   /* border-radius: 1px; */
@@ -77,6 +94,8 @@ body {
 }
 
 #column1 {
+  display: flex;
+  flex-direction: column;
 }
 
 #column2 {

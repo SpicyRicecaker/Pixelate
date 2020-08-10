@@ -73,7 +73,6 @@ p {
 
 .loadFile {
   grid-area: loadfile;
-  /* display: grid; */
   padding: 1em;
 }
 
@@ -99,10 +98,8 @@ p {
 #pixelation {
   grid-area: pixelation;
   padding: 1em;
-  /* Scuffed but decreases the size of h2 so worth */
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-columns: minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 .outputResolution {
@@ -113,8 +110,10 @@ p {
 #sliderContainer {
   margin: 0;
   padding: 0;
+  flex-basis: 100%;
   background-color: lightblue;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -124,7 +123,7 @@ p {
   /* Overrides the default styling */
   -webkit-appearance: none;
   /* Length and width of the slider */
-  width: 1000000000000px;
+  width: 1000px;
   height: 1em;
   /* Rounds off the edges of the slider*/
   /* border-radius: 1px; */
@@ -137,8 +136,7 @@ p {
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
   /* Change it to vertical somehow... */
-  /* transform: rotate(270deg) scaleX(2); */
-  orientation: 'vertical';
+  transform: rotate(-90deg);
   margin: 0;
 }
 
