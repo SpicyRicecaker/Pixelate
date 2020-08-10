@@ -2,11 +2,22 @@
 
 <head>
   <title>Pixelate</title>
-  <link href='https://fonts.googleapis.com/css2?family=Open+Sans&display=swap' rel='stylesheet' />
-  <link rel='stylesheet' type='text/css' href='testStyle.css' />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" type="text/css" href="testStyle.css" />
 </head>
 
 <body>
-  <img id="image1" src="zero_two.jpg"/>
-  <script src='testPixelate.js'></script>
+  <div id="wrapper">
+    <div id="column1">
+      <div id="rangeContainer">
+        <input type="range" id="rangeSlider" />
+      </div>
+    </div>
+    <div id="column2"></div>
+    <div id="column3"></div>
+  </div>
+  <script src="testPixelate.js"></script>
 </body>
