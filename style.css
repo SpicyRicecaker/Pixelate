@@ -122,9 +122,6 @@ p {
 #pixelationSlider {
   /* Overrides the default styling */
   -webkit-appearance: none;
-  /* Length and width of the slider */
-  width: 1000px;
-  height: 1em;
   /* Rounds off the edges of the slider*/
   /* border-radius: 1px; */
   /* Sets the background color of the slider */
