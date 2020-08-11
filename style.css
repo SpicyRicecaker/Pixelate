@@ -135,6 +135,8 @@ p {
   /* Change it to vertical somehow... */
   transform: rotate(-90deg);
   margin: 0;
+  padding: 0;
+  /* WIDTH AND HEIGHT */
 }
 
 #pixelationSlider:hover {
