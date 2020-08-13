@@ -25,7 +25,7 @@ const sliderElements = [
   document.getElementById('pixelationSlider'),
   document.getElementById('box'),
 ];
-let pixelation = 2;
+let pixelation = 17;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -168,22 +168,16 @@ function drawImageToCanvas() {
 function pixelateImage() {
   const width = loadedImage.naturalWidth;
   const height = loadedImage.naturalHeight;
-  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-  console.log('current width & height are: ', width, height);
-  console.log('current pixelation amount is: ', pixelation);
-  console.log('pixelation + 1 is', pixelation + 1);
 
   // Get rgb data of every single pixel in the image, .data removes some other info
   const imgData = ctx.getImageData(0, 0, width, height);
 
   const pixelationArea = pixelation * pixelation;
-  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGG
-  console.log('current pixelation area is: ', pixelationArea);
-  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   const pMax = height * width * 4;
-  const actualTotalPixels = width * height;
-  let totalPixels = 0;
-  // END DEBUG
+
+  // IMPORTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANT
+  // const actualTotalPixels = width * height;
+  // let totalPixels = 0;
 
   // Try to get the corners of each "pixelation x pixelation"
   for (let y = 0; y < height; y += pixelation) {
@@ -205,11 +199,8 @@ function pixelateImage() {
           totalR += imgData.data[p];
           totalG += imgData.data[p + 1];
           totalB += imgData.data[p + 2];
-          totalPixels += 1;
         }
       }
-      console.log('totalR is:', totalR);
-      console.log('totalR + 1 is:', totalR + 1);
       const averageR = totalR / pixelationArea;
       const averageG = totalG / pixelationArea;
       const averageB = totalB / pixelationArea;
@@ -231,9 +222,6 @@ function pixelateImage() {
     }
   }
   ctx.putImageData(imgData, 0, 0);
-  console.log('actual total pixels: ', actualTotalPixels);
-  console.log('total pixels counted: ', totalPixels);
-
   // Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
   // Average these values, draw a full rect in its place
 }
