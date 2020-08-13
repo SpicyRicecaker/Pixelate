@@ -23,8 +23,8 @@
                 Pixelation!
             </h2>
             <div id="sliderContainer">
-                <div id="box">17</div>
-                <input type="range" min="1" max="99" value="17" id="pixelationSlider">
+                <div id="box"></div>
+                <input type="range" min="1" max="99" id="pixelationSlider">
             </div>
         </div>
         <div class="fileInfo">
@@ -48,6 +48,19 @@
             <h2>
                 Output Res!
             </h2>
+            <div id="resContainer">
+                <select id="resSelect">
+                    <option value="SD">720x480</option>
+                    <option value="HD">1280x720</option>
+                    <option value="FHD">1920x1080</option>
+                    <option value="WQHD">2560x1440</option>
+                    <option value="UHD">3840x2160</option>
+                </select>
+            </div>
+            <div id="checkContainer">
+                <input type="checkbox" value="crop" id="cropCheck">
+                <label for="cropCheck">Crop</label>
+            </div>
         </div>
         <input type="button" id="largeButton" value="Save File">
     </div>

@@ -25,7 +25,7 @@ const sliderElements = [
   document.getElementById('pixelationSlider'),
   document.getElementById('box'),
 ];
-let pixelation = 17;
+let pixelation;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -172,16 +172,10 @@ function pixelateImage() {
   // Get rgb data of every single pixel in the image, .data removes some other info
   const imgData = ctx.getImageData(0, 0, width, height);
 
-  const pixelationArea = pixelation * pixelation;
-  const pMax = height * width * 4;
-
-  // IMPORTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANT
-  // const actualTotalPixels = width * height;
-  // let totalPixels = 0;
-
   // Try to get the corners of each "pixelation x pixelation"
   for (let y = 0; y < height; y += pixelation) {
     for (let x = 0; x < width; x += pixelation) {
+      let accountedArea = 0;
       // Let's define the average values that we'll use later
       let totalR = 0;
       let totalG = 0;
@@ -192,28 +186,29 @@ function pixelateImage() {
           // Now we're looking for the arrayLocation of each value of each pixel
           const pixelX = x + sampleX;
           const pixelY = y + sampleY;
-          const p = (pixelY * width + pixelX) * 4;
-          if (p >= pMax) {
+          if (pixelX >= width || pixelY >= height) {
             break;
           }
+          accountedArea += 1;
+          const p = (pixelY * width + pixelX) * 4;
           totalR += imgData.data[p];
           totalG += imgData.data[p + 1];
           totalB += imgData.data[p + 2];
         }
       }
-      const averageR = totalR / pixelationArea;
-      const averageG = totalG / pixelationArea;
-      const averageB = totalB / pixelationArea;
+      const averageR = totalR / accountedArea;
+      const averageG = totalG / accountedArea;
+      const averageB = totalB / accountedArea;
       // console.log('the averages are', averageR, averageG, averageB);
       for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
         for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
           // Now we're looking for the arrayLocation of each value of each pixel
           const pixelX = x + sampleX;
           const pixelY = y + sampleY;
-          const p = (pixelY * width + pixelX) * 4;
-          if (p >= pMax) {
+          if (pixelX >= width || pixelY >= height) {
             break;
           }
+          const p = (pixelY * width + pixelX) * 4;
           imgData.data[p] = averageR;
           imgData.data[p + 1] = averageG;
           imgData.data[p + 2] = averageB;
@@ -402,8 +397,15 @@ sliderElements[1].addEventListener('change', () => {
   exportImage();
 });
 
+function updateSliderValue() {
+  pixelation = 1;
+  sliderElements[1].value = pixelation;
+  sliderElements[2].innerHTML = pixelation;
+}
+
 function init() {
   updateSlider();
+  updateSliderValue();
 }
 
 init();
