@@ -9,6 +9,7 @@ ctx.imageSmoothingEnabled = false;
 const fs = require('fs');
 // Path required for some things...
 const path = require('path');
+const { contextBridge } = require('electron');
 // Dialog, for file explorer, .remote at the end if not in main
 const { dialog } = require('electron').remote;
 // Loaded filepath
@@ -24,7 +25,7 @@ const sliderElements = [
   document.getElementById('pixelationSlider'),
   document.getElementById('box'),
 ];
-let pixelation = 1;
+let pixelation = 2;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -165,9 +166,76 @@ function drawImageToCanvas() {
 
 // Here is the actual smart coding happening
 function pixelateImage() {
-  ctx.beginPath();
-  ctx.fillStyle = 'red';
-  ctx.fillRect(0, 0, pixelation * 20, pixelation * 20);
+  const width = loadedImage.naturalWidth;
+  const height = loadedImage.naturalHeight;
+  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+  console.log('current width & height are: ', width, height);
+  console.log('current pixelation amount is: ', pixelation);
+  console.log('pixelation + 1 is', pixelation + 1);
+
+  // Get rgb data of every single pixel in the image, .data removes some other info
+  const imgData = ctx.getImageData(0, 0, width, height);
+
+  const pixelationArea = pixelation * pixelation;
+  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGG
+  console.log('current pixelation area is: ', pixelationArea);
+  // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+  const pMax = height * width * 4;
+  const actualTotalPixels = width * height;
+  let totalPixels = 0;
+  // END DEBUG
+
+  // Try to get the corners of each "pixelation x pixelation"
+  for (let y = 0; y < height; y += pixelation) {
+    for (let x = 0; x < width; x += pixelation) {
+      // Let's define the average values that we'll use later
+      let totalR = 0;
+      let totalG = 0;
+      let totalB = 0;
+      // Now we're looking for each pixel
+      for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+        for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+          // Now we're looking for the arrayLocation of each value of each pixel
+          const pixelX = x + sampleX;
+          const pixelY = y + sampleY;
+          const p = (pixelY * width + pixelX) * 4;
+          if (p >= pMax) {
+            break;
+          }
+          totalR += imgData.data[p];
+          totalG += imgData.data[p + 1];
+          totalB += imgData.data[p + 2];
+          totalPixels += 1;
+        }
+      }
+      console.log('totalR is:', totalR);
+      console.log('totalR + 1 is:', totalR + 1);
+      const averageR = totalR / pixelationArea;
+      const averageG = totalG / pixelationArea;
+      const averageB = totalB / pixelationArea;
+      // console.log('the averages are', averageR, averageG, averageB);
+      for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+        for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+          // Now we're looking for the arrayLocation of each value of each pixel
+          const pixelX = x + sampleX;
+          const pixelY = y + sampleY;
+          const p = (pixelY * width + pixelX) * 4;
+          if (p >= pMax) {
+            break;
+          }
+          imgData.data[p] = averageR;
+          imgData.data[p + 1] = averageG;
+          imgData.data[p + 2] = averageB;
+        }
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  console.log('actual total pixels: ', actualTotalPixels);
+  console.log('total pixels counted: ', totalPixels);
+
+  // Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
+  // Average these values, draw a full rect in its place
 }
 
 function loadDrawAndExportImage() {
@@ -328,9 +396,12 @@ window.addEventListener('resize', () => {
 });
 
 sliderElements[1].addEventListener('input', function updateValue() {
-  pixelation = this.value;
+  pixelation = Number(this.value);
   this.style.background = `linear-gradient(to right, #ffd966 0%, #ffd966 ${pixelation}%, #fff ${pixelation}%, white 100%)`;
   sliderElements[2].innerHTML = pixelation;
+});
+
+sliderElements[1].addEventListener('change', () => {
   if (filePath === undefined) {
     return;
   }
