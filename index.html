@@ -9,7 +9,7 @@
 
 <body>
     <div class="wrapper">
-        <input type="button" id="smallButton" value="Load File"></button>
+        <input type="button" id="smallButton" value="Load File">
         <div class="loadFile">
             <h2>
                 Drop File!
@@ -17,14 +17,14 @@
         </div>
         <div id="container">
             <img id="panelImage">
-            <!-- <canvas id="mainPanel"></canvas> -->
         </div>
         <div id="pixelation">
             <h2>
                 Pixelation!
             </h2>
             <div id="sliderContainer">
-                <input type="range" min="1" max="100" id="pixelationSlider">
+                <div id="box">1</div>
+                <input type="range" min="1" max="99" value="1" id="pixelationSlider">
             </div>
         </div>
         <div class="fileInfo">
@@ -49,7 +49,7 @@
                 Output Res!
             </h2>
         </div>
-        <input type="button" id="largeButton" value="Save File"></button>
+        <input type="button" id="largeButton" value="Save File">
     </div>
     <script src="pixelate.js"></script>
 </body>

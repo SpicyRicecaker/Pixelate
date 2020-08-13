@@ -17,6 +17,14 @@ let filePath;
 let loadedImage;
 // Actual modified verson of said loaded image
 let unloadedImage;
+// Some document stuff to store
+// 0 container, 1 slider, 2 box
+const sliderElements = [
+  document.getElementById('sliderContainer'),
+  document.getElementById('pixelationSlider'),
+  document.getElementById('box'),
+];
+let pixelation = 1;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -118,6 +126,8 @@ function exportImage() {
     // Now we need to resize this image to fit the container???
     // resizeImage();
     unloadedImage.setAttribute('id', 'panelImage');
+    // 2.5. Remove the previous pic!
+    document.getElementById('panelImage').remove();
     // Add it to the darn docccc!!!
     document.getElementById('container').appendChild(unloadedImage);
   };
@@ -155,7 +165,9 @@ function drawImageToCanvas() {
 
 // Here is the actual smart coding happening
 function pixelateImage() {
-  console.log('hi');
+  ctx.beginPath();
+  ctx.fillStyle = 'red';
+  ctx.fillRect(0, 0, pixelation * 20, pixelation * 20);
 }
 
 function loadDrawAndExportImage() {
@@ -168,7 +180,7 @@ function loadDrawAndExportImage() {
     // as we're literally removing the image right after
     updateFileInfo();
     // 2.5. Remove the previous pic!
-    document.getElementById('panelImage').remove();
+    // document.getElementById('panelImage').remove();
     // 3. First we should draw the contents of the image
     // onto a canvas
     drawImageToCanvas();
@@ -307,13 +319,32 @@ document.getElementById('smallButton').addEventListener(
   false,
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
+function updateSlider() {
+  sliderElements[1].style.width = sliderElements[0].offsetHeight * 0.8;
+}
 
-// function onResize() {}
+window.addEventListener('resize', () => {
+  updateSlider();
+});
 
-// window.addEventListener('resize', onResize);
+sliderElements[1].addEventListener('input', function updateValue() {
+  pixelation = this.value;
+  this.style.background = `linear-gradient(to right, #ffd966 0%, #ffd966 ${pixelation}%, #fff ${pixelation}%, white 100%)`;
+  sliderElements[2].innerHTML = pixelation;
+  if (filePath === undefined) {
+    return;
+  }
+  // 3. First we should draw the contents of the image
+  // onto a canvas
+  drawImageToCanvas();
+  // 4. Modify the canvas as needed!
+  pixelateImage();
+  // 5. Export the image from the canvas!
+  exportImage();
+});
 
 function init() {
-  // Literally this function is not needed I don't think
+  updateSlider();
 }
 
 init();

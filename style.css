@@ -73,12 +73,14 @@ p {
 
 .loadFile {
   grid-area: loadfile;
-  padding: 1em;
+  /* Top left bottom right */
+  /* Top/Bottom Left/Right */
+  padding: 0 1em;
 }
 
 .fileInfo {
   grid-area: fileinfo;
-  padding: 1em;
+  padding: 0 1em;
 }
 
 #container {
@@ -97,14 +99,14 @@ p {
 
 #pixelation {
   grid-area: pixelation;
-  padding: 1em;
+  padding: 0 1em 1em 1em;
   display: flex;
   flex-direction: column;
 }
 
 .outputResolution {
   grid-area: outputresolution;
-  padding: 1em;
+  padding: 0 1em;
 }
 
 #sliderContainer {
@@ -125,7 +127,11 @@ p {
   /* Rounds off the edges of the slider*/
   /* border-radius: 1px; */
   /* Sets the background color of the slider */
-  background: #f3f3f3;
+  background: linear-gradient(
+    to right,
+    /* #ffd966 0%, */ /* #ffd966 50%, */ #fff 0%,
+    #fff 100%
+  );
   /* Gets rid of outline surrounding the slider when selected */
   outline: none;
   /* Setting up for the hover animation */
@@ -134,13 +140,27 @@ p {
   transition: opacity 0.2s;
   /* Change it to vertical somehow... */
   transform: rotate(-90deg);
-  margin: 0;
-  padding: 0;
   /* WIDTH AND HEIGHT */
+  height: 1em;
+}
+
+#box {
+  position: absolute;
+  font-size: 10vw;
+  opacity: 0.9;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #pixelationSlider:hover {
   opacity: 1;
+}
+
+#pixelationSlider::-webkit-slider-runnable-track {
 }
 
 /* The handle/part you can drag of slider*/
@@ -160,7 +180,6 @@ p {
 
 #largeButton {
   grid-area: saveas;
-  padding: 1em;
   /* Font stuff, for some reason body styling doesn't affect buttons */
   font-family: 'Lemon Milk';
   font-size: 1em;
@@ -168,7 +187,7 @@ p {
 
 #smallButton {
   grid-area: loadas;
-  padding: 1em;
+  /* padding: 1em; */
   /* Font stuff */
   font-family: 'Lemon Milk';
   font-size: 1em;
