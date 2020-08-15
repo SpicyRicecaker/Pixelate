@@ -90,7 +90,7 @@ p {
   justify-content: center;
 }
 
-#panelImage {
+#canvas {
   display: block;
   margin: auto;
   max-width: 100%;

@@ -1,7 +1,7 @@
 // let width;
 // let height;
 // Canvas
-const canvas = document.createElement('canvas');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 // Other specifications here
@@ -16,16 +16,16 @@ const { dialog } = require('electron').remote;
 let filePath;
 // Actual loaded image
 let loadedImage;
-// Actual modified verson of said loaded image
-let unloadedImage;
 // Some document stuff to store
-// 0 container, 1 slider, 2 box
 const sliderElements = [
-  document.getElementById('sliderContainer'),
-  document.getElementById('pixelationSlider'),
-  document.getElementById('box'),
+  document.getElementById('sliderContainer'), //0
+  document.getElementById('pixelationSlider'), //1
+  document.getElementById('box'), //2
+  document.getElementById('cropCheck'), //3
+  document.getElementById('resSelect'), //4
 ];
 let pixelation;
+let cropped;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -97,12 +97,11 @@ function updateFileInfo() {
   document.getElementById('dd_path').innerHTML = fileName;
 
   // Image dimensions can be gathered from image
-  const ddDimensions = `${loadedImage.naturalWidth} x ${loadedImage.naturalHeight}`;
-  document.getElementById('dd_dimensions').innerHTML = ddDimensions;
+  document.getElementById(
+    'dd_dimensions',
+  ).innerHTML = `${loadedImage.naturalWidth} x ${loadedImage.naturalHeight}`;
 
   // Size of file
-  const fileStats = fs.statSync(fileName);
-  const fileSizeInMB = roundTo(fileStats.size / 1000000, 100);
   // `${fileSizeInMB} MB` is known as a 'template literal'. Template literals allow for
   // concatenating strings and increase readability!
   // They're really amazing, as long as you have `` along with ${}, you can embed
@@ -111,7 +110,11 @@ function updateFileInfo() {
   // Template: preset format
   // Literal: value written as exactly as it's meant to be interpreted
   // Interpolation: The insertion of something of a different nature into something else
-  document.getElementById('dd_size').innerHTML = `${fileSizeInMB} MB`;
+  const fileStats = fs.statSync(fileName);
+  document.getElementById('dd_size').innerHTML = `${roundTo(
+    fileStats.size / 1000000,
+    100,
+  )} MB`;
 
   // Type of file
   document.getElementById('dd_fileType').innerHTML = ddName.split('.').pop();
@@ -122,6 +125,8 @@ function updateFileInfo() {
 
 // Takes the canvas and turns it into an image
 function exportImage() {
+  return;
+
   unloadedImage = new Image();
   unloadedImage.onload = function onDisplayImage() {
     // Now we need to resize this image to fit the container???
@@ -166,55 +171,96 @@ function drawImageToCanvas() {
 
 // Here is the actual smart coding happening
 function pixelateImage() {
+  if (pixelation === 1) {
+    return;
+  }
+
   const width = loadedImage.naturalWidth;
   const height = loadedImage.naturalHeight;
 
   // Get rgb data of every single pixel in the image, .data removes some other info
   const imgData = ctx.getImageData(0, 0, width, height);
 
-  // Try to get the corners of each "pixelation x pixelation"
-  for (let y = 0; y < height; y += pixelation) {
-    for (let x = 0; x < width; x += pixelation) {
-      let accountedArea = 0;
-      // Let's define the average values that we'll use later
-      let totalR = 0;
-      let totalG = 0;
-      let totalB = 0;
-      // Now we're looking for each pixel
-      for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
-        for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
-          // Now we're looking for the arrayLocation of each value of each pixel
-          const pixelX = x + sampleX;
-          const pixelY = y + sampleY;
-          if (pixelX >= width || pixelY >= height) {
-            break;
+  switch (cropped) {
+    case true:
+      const pixelationArea = pixelation * pixelation;
+      const overflowX = width % pixelation;
+      const overflowY = height % pixelation;
+      // Try to get the corners of each "pixelation x pixelation"
+      for (let y = 0; y < height - overflowY; y += pixelation) {
+        for (let x = 0; x < width - overflowX; x += pixelation) {
+          // Let's define the average values that we'll use later
+          let totalR = 0;
+          let totalG = 0;
+          let totalB = 0;
+          let processedPixels = [];
+          // Now we're looking for each pixel
+          for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+            for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+              // Now we're looking for the arrayLocation of each value of each pixel
+              const pixelX = x + sampleX;
+              const pixelY = y + sampleY;
+              // if (pixelX >= width || pixelY >= height) {
+              //   break;
+              // }
+              const p = (pixelY * width + pixelX) * 4;
+              totalR += imgData.data[p];
+              totalG += imgData.data[p + 1];
+              totalB += imgData.data[p + 2];
+              processedPixels.push(p);
+            }
           }
-          accountedArea += 1;
-          const p = (pixelY * width + pixelX) * 4;
-          totalR += imgData.data[p];
-          totalG += imgData.data[p + 1];
-          totalB += imgData.data[p + 2];
+          const averageR = totalR / pixelationArea;
+          const averageG = totalG / pixelationArea;
+          const averageB = totalB / pixelationArea;
+          // console.log('the averages are', averageR, averageG, averageB);
+          for (let i = 0; i < processedPixels.length; i += 1) {
+            const p = processedPixels[i];
+            imgData.data[p] = averageR;
+            imgData.data[p + 1] = averageG;
+            imgData.data[p + 2] = averageB;
+          }
         }
       }
-      const averageR = totalR / accountedArea;
-      const averageG = totalG / accountedArea;
-      const averageB = totalB / accountedArea;
-      // console.log('the averages are', averageR, averageG, averageB);
-      for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
-        for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
-          // Now we're looking for the arrayLocation of each value of each pixel
-          const pixelX = x + sampleX;
-          const pixelY = y + sampleY;
-          if (pixelX >= width || pixelY >= height) {
-            break;
+      break;
+    case false:
+      // Try to get the corners of each "pixelation x pixelation"
+      for (let y = 0; y < height; y += pixelation) {
+        for (let x = 0; x < width; x += pixelation) {
+          // Let's define the average values that we'll use later
+          let totalR = 0;
+          let totalG = 0;
+          let totalB = 0;
+          let processedPixels = [];
+          // Now we're looking for each pixel
+          for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+            for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+              // Now we're looking for the arrayLocation of each value of each pixel
+              const pixelX = x + sampleX;
+              const pixelY = y + sampleY;
+              if (pixelX >= width || pixelY >= height) {
+                break;
+              }
+              const p = (pixelY * width + pixelX) * 4;
+              totalR += imgData.data[p];
+              totalG += imgData.data[p + 1];
+              totalB += imgData.data[p + 2];
+              processedPixels.push(p);
+            }
           }
-          const p = (pixelY * width + pixelX) * 4;
-          imgData.data[p] = averageR;
-          imgData.data[p + 1] = averageG;
-          imgData.data[p + 2] = averageB;
+          const l = processedPixels.length;
+          const averageR = totalR / l;
+          const averageG = totalG / l;
+          const averageB = totalB / l;
+          for (let i = 0; i < processedPixels.length; i += 1) {
+            const p = processedPixels[i];
+            imgData.data[p] = averageR;
+            imgData.data[p + 1] = averageG;
+            imgData.data[p + 2] = averageB;
+          }
         }
       }
-    }
+      break;
   }
   ctx.putImageData(imgData, 0, 0);
   // Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
@@ -235,8 +281,10 @@ function loadDrawAndExportImage() {
     // 3. First we should draw the contents of the image
     // onto a canvas
     drawImageToCanvas();
+
     // 4. Modify the canvas as needed!
     pixelateImage();
+
     // 5. Export the image from the canvas!
     exportImage();
   };
@@ -245,9 +293,6 @@ function loadDrawAndExportImage() {
 // When the user clicks on the save file button, open a dialog
 // and save the current image
 document.getElementById('largeButton').addEventListener('click', () => {
-  if (unloadedImage === undefined) {
-    return;
-  }
   const options = {
     title: 'Save File',
     buttonLabel: 'Save File',
@@ -370,21 +415,21 @@ document.getElementById('smallButton').addEventListener(
   false,
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
-function updateSlider() {
+function updateSliderSize() {
   sliderElements[1].style.width = sliderElements[0].offsetHeight * 0.8;
 }
 
 window.addEventListener('resize', () => {
-  updateSlider();
+  updateSliderSize();
 });
 
-sliderElements[1].addEventListener('input', function updateValue() {
+sliderElements[1].addEventListener('input', function updatePixelation() {
   pixelation = Number(this.value);
   this.style.background = `linear-gradient(to right, #ffd966 0%, #ffd966 ${pixelation}%, #fff ${pixelation}%, white 100%)`;
   sliderElements[2].innerHTML = pixelation;
 });
 
-sliderElements[1].addEventListener('change', () => {
+function justExportImage() {
   if (filePath === undefined) {
     return;
   }
@@ -395,17 +440,30 @@ sliderElements[1].addEventListener('change', () => {
   pixelateImage();
   // 5. Export the image from the canvas!
   exportImage();
+}
+
+// Adding an event triggered when value of slider is changed
+sliderElements[1].addEventListener('change', () => {
+  justExportImage();
 });
 
-function updateSliderValue() {
+// Adding an event triggered when the value of checkbox is changed
+sliderElements[3].addEventListener('change', function updateCropped() {
+  cropped = this.checked;
+  justExportImage();
+});
+
+function updateCheckboxValue() {}
+
+function init() {
+  // Set slider size to be proportional to window
+  updateSliderSize();
+  // Initialize value of slider to be 1 and set everything equal to it
   pixelation = 1;
   sliderElements[1].value = pixelation;
   sliderElements[2].innerHTML = pixelation;
-}
-
-function init() {
-  updateSlider();
-  updateSliderValue();
+  // Initialize value of checkbox
+  cropped = sliderElements[3].checked;
 }
 
 init();
