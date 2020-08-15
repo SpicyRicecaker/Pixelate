@@ -123,43 +123,43 @@ function updateFileInfo() {
   document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
 }
 
-// Takes the canvas and turns it into an image
-function exportImage() {
-  return;
+// // Takes the canvas and turns it into an image
+// function exportImage() {
+//   return;
 
-  unloadedImage = new Image();
-  unloadedImage.onload = function onDisplayImage() {
-    // Now we need to resize this image to fit the container???
-    // resizeImage();
-    unloadedImage.setAttribute('id', 'panelImage');
-    // 2.5. Remove the previous pic!
-    document.getElementById('panelImage').remove();
-    // Add it to the darn docccc!!!
-    document.getElementById('container').appendChild(unloadedImage);
-  };
-  // Match output source to image
-  // let fileType;
-  // switch (getFileType(filePath)) {
-  //   case 'png':
-  //     fileType = 'png';
-  //     break;
-  //   case 'jpg':
-  //     fileType = 'jpg';
-  //     break;
-  //   case 'jpeg':
-  //     fileType = 'jpeg';
-  //     break;
-  //   default:
-  //     console.log('Sorry, a program error occured');
-  //     return;
-  // }
-  // --Export to image file!~
-  // unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
+//   unloadedImage = new Image();
+//   unloadedImage.onload = function onDisplayImage() {
+//     // Now we need to resize this image to fit the container???
+//     // resizeImage();
+//     unloadedImage.setAttribute('id', 'panelImage');
+//     // 2.5. Remove the previous pic!
+//     document.getElementById('panelImage').remove();
+//     // Add it to the darn docccc!!!
+//     document.getElementById('container').appendChild(unloadedImage);
+//   };
+//   // Match output source to image
+//   // let fileType;
+//   // switch (getFileType(filePath)) {
+//   //   case 'png':
+//   //     fileType = 'png';
+//   //     break;
+//   //   case 'jpg':
+//   //     fileType = 'jpg';
+//   //     break;
+//   //   case 'jpeg':
+//   //     fileType = 'jpeg';
+//   //     break;
+//   //   default:
+//   //     console.log('Sorry, a program error occured');
+//   //     return;
+//   // }
+//   // --Export to image file!~
+//   // unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
 
-  // Since we are pixelating the file, a png makes 1000 times
-  // more sense lol
-  unloadedImage.src = canvas.toDataURL('image/png');
-}
+//   // Since we are pixelating the file, a png makes 1000 times
+//   // more sense lol
+//   unloadedImage.src = canvas.toDataURL('image/png');
+// }
 
 function drawImageToCanvas() {
   // Set canvas size to, of course, match image size (entire
@@ -284,9 +284,6 @@ function loadDrawAndExportImage() {
 
     // 4. Modify the canvas as needed!
     pixelateImage();
-
-    // 5. Export the image from the canvas!
-    exportImage();
   };
   loadedImage.src = filePath;
 }
@@ -347,7 +344,10 @@ document.getElementById('largeButton').addEventListener('click', () => {
     // THAT A PNG IMAGE IS JUST A BASE64 STRING AND THAT YOU
     // GOTTA REMOVE THE FILLER AND THEN YOU CAN USE IT AS DATA
     // HAHHAHAHAHAHAHAHAHAHHAh
-    const data = unloadedImage.src.replace('data:image/png;base64,', '');
+
+    const data = canvas
+      .toDataURL('image/png')
+      .replace('data:image/png;base64,', '');
     // console.log(unloadedImage.src);
     // console.log(data);
     // Apparently 'new Buffer' is deprecated
@@ -438,8 +438,6 @@ function justExportImage() {
   drawImageToCanvas();
   // 4. Modify the canvas as needed!
   pixelateImage();
-  // 5. Export the image from the canvas!
-  exportImage();
 }
 
 // Adding an event triggered when value of slider is changed
