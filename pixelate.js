@@ -166,7 +166,22 @@ function drawImageToCanvas() {
   // point of this conversion to images)
   canvas.height = loadedImage.naturalHeight;
   canvas.width = loadedImage.naturalWidth;
-  ctx.drawImage(loadedImage, 0, 0);
+  switch (cropped) {
+    case true:
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.drawImage(
+        loadedImage,
+        0,
+        0,
+        width - (width % pixelation),
+        height - (height % pixelation),
+      );
+      break;
+    case false:
+      ctx.drawImage(loadedImage, 0, 0);
+      break;
+  }
 }
 
 // Here is the actual smart coding happening
@@ -252,7 +267,7 @@ function pixelateImage() {
           const averageR = totalR / l;
           const averageG = totalG / l;
           const averageB = totalB / l;
-          for (let i = 0; i < processedPixels.length; i += 1) {
+          for (let i = 0; i < l; i += 1) {
             const p = processedPixels[i];
             imgData.data[p] = averageR;
             imgData.data[p + 1] = averageG;
@@ -450,8 +465,6 @@ sliderElements[3].addEventListener('change', function updateCropped() {
   cropped = this.checked;
   justExportImage();
 });
-
-function updateCheckboxValue() {}
 
 function init() {
   // Set slider size to be proportional to window
