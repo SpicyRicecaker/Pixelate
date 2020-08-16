@@ -81,6 +81,15 @@ function roundTo(num, place) {
   return temp;
 }
 
+// Resize canvas function
+function resizeCanvas(someWidth, someHeight) {
+  if (canvas.width == someWidth && canvas.height == someHeight) {
+    return;
+  }
+  canvas.width = someWidth;
+  canvas.height = someHeight;
+}
+
 // function getFileType(someFilePath) {
 //   return path.basename(someFilePath[0]).split('.').pop();
 // }
@@ -193,6 +202,10 @@ function pixelateImage() {
   const width = loadedImage.naturalWidth;
   const height = loadedImage.naturalHeight;
 
+  // Width of the final canvas
+  let desiredWidth = width;
+  let desiredHeight = height;
+
   // Get rgb data of every single pixel in the image, .data removes some other info
   const imgData = ctx.getImageData(0, 0, width, height);
 
@@ -201,9 +214,11 @@ function pixelateImage() {
       const pixelationArea = pixelation * pixelation;
       const overflowX = width % pixelation;
       const overflowY = height % pixelation;
+      desiredWidth = width - overflowX;
+      desiredHeight = height - overflowY;
       // Try to get the corners of each "pixelation x pixelation"
-      for (let y = 0; y < height - overflowY; y += pixelation) {
-        for (let x = 0; x < width - overflowX; x += pixelation) {
+      for (let y = 0; y < desiredHeight; y += pixelation) {
+        for (let x = 0; x < desiredWidth; x += pixelation) {
           // Let's define the average values that we'll use later
           let totalR = 0;
           let totalG = 0;
@@ -277,6 +292,7 @@ function pixelateImage() {
       }
       break;
   }
+  resizeCanvas(desiredWidth, desiredHeight);
   ctx.putImageData(imgData, 0, 0);
   // Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
   // Average these values, draw a full rect in its place
