@@ -10,6 +10,7 @@ const fs = require('fs');
 // Path required for some things...
 const path = require('path');
 const { contextBridge } = require('electron');
+const { DefaultDeserializer } = require('v8');
 // Dialog, for file explorer, .remote at the end if not in main
 const { dialog } = require('electron').remote;
 // Loaded filepath
@@ -22,7 +23,7 @@ const sliderElements = [
   document.getElementById('pixelationSlider'), //1
   document.getElementById('box'), //2
   document.getElementById('cropCheck'), //3
-  document.getElementById('resSelect'), //4
+  document.getElementById('resInput'), //4
 ];
 let pixelation;
 let cropped;
@@ -370,12 +371,17 @@ document.getElementById('largeButton').addEventListener('click', () => {
   const saveFilePath = dialog.showSaveDialogSync(options);
   // If a valid file path was actually named
   if (saveFilePath !== undefined) {
+    // If the desired resolution is not default, we'll have to draw a new canvas and resize it
+    const resString = sliderElements[4].value;
+    if (resString != '' && resString != 'DEFAULT') {
+      console.log('hihihihihi');
+    }
+
     // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
     // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE
     // THAT A PNG IMAGE IS JUST A BASE64 STRING AND THAT YOU
     // GOTTA REMOVE THE FILLER AND THEN YOU CAN USE IT AS DATA
     // HAHHAHAHAHAHAHAHAHAHHAh
-
     const data = canvas
       .toDataURL('image/png')
       .replace('data:image/png;base64,', '');

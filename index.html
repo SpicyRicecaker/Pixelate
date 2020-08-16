@@ -46,16 +46,17 @@
         </div>
         <div class="outputResolution">
             <h2>
-                Output Res!
+                Custom Res!
             </h2>
             <div id="resContainer">
-                <select id="resSelect">
-                    <option value="SD">720x480</option>
-                    <option value="HD">1280x720</option>
-                    <option value="FHD">1920x1080</option>
-                    <option value="WQHD">2560x1440</option>
-                    <option value="UHD">3840x2160</option>
-                </select>
+                <input id="resInput" type="text" list="resolutions" placeholder='E.g. "68x96"'/>
+                <datalist id="resolutions">
+                    <option value="720x480">SD</optionD>
+                    <option value="1280x720">HD</option>
+                    <option value="1920x1080">FHD</option>
+                    <option value="2560x1440">WQHD</option>
+                    <option value="3840x2160">UHD</option>
+                </datalist>
             </div>
             <div id="checkContainer">
                 <input type="checkbox" value="crop" id="cropCheck">

@@ -5,8 +5,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1366,
     height: 768,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1280,
+    minHeight: 720,
     webPreferences: {
       nodeIntegration: true,
     },
