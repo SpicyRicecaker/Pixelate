@@ -27,6 +27,7 @@ const sliderElements = [
 ];
 let pixelation;
 let cropped;
+let useCustomResolution = false;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -373,9 +374,6 @@ document.getElementById('largeButton').addEventListener('click', () => {
   if (saveFilePath !== undefined) {
     // If the desired resolution is not default, we'll have to draw a new canvas and resize it
     const resString = sliderElements[4].value;
-    if (resString != '' && resString != 'DEFAULT') {
-      console.log('hihihihihi');
-    }
 
     // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
     // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE

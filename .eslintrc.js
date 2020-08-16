@@ -17,4 +17,5 @@ module.exports = {
   settings: {
     'import/core-modules': ['electron'],
   },
+  // https://www.robinwieruch.de/prettier-eslint
 };
