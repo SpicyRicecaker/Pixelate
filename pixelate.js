@@ -445,7 +445,7 @@ document.getElementById('smallButton').addEventListener(
     // WIN = new BrowserWindow({width: 800, height: 600})
     // And the browserWindow has a lot of options
 
-    // A lot of code / explanation was learned from this helpful article: "https://www.brainbell.com/javascript/show-open-dialog.html"
+    // A lot of code / explanation was learned from this helpful article: "https://www.brainbell.com/javascript/show-open-dgialog.html"
   },
   false,
 );
@@ -485,6 +485,9 @@ sliderElements[3].addEventListener('change', function updateCropped() {
   cropped = this.checked;
   justExportImage();
 });
+
+// Validate if we can use the custom resolution on resolution input
+sliderElements[4].addEventListener('change', function updateResUse() {});
 
 function init() {
   // Set slider size to be proportional to window
