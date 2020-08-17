@@ -9,8 +9,6 @@ ctx.imageSmoothingEnabled = false;
 const fs = require('fs');
 // Path required for some things...
 const path = require('path');
-const { contextBridge } = require('electron');
-const { DefaultDeserializer } = require('v8');
 // Dialog, for file explorer, .remote at the end if not in main
 const { dialog } = require('electron').remote;
 // Loaded filepath
@@ -19,11 +17,11 @@ let filePath;
 let loadedImage;
 // Some document stuff to store
 const sliderElements = [
-  document.getElementById('sliderContainer'), //0
-  document.getElementById('pixelationSlider'), //1
-  document.getElementById('box'), //2
-  document.getElementById('cropCheck'), //3
-  document.getElementById('resInput'), //4
+  document.getElementById('sliderContainer'), // 0
+  document.getElementById('pixelationSlider'), // 1
+  document.getElementById('box'), // 2
+  document.getElementById('cropCheck'), // 3
+  document.getElementById('resInput'), // 4
 ];
 let pixelation;
 let cropped;
@@ -85,7 +83,7 @@ function roundTo(num, place) {
 
 // Resize canvas function
 function resizeCanvas(someWidth, someHeight) {
-  if (canvas.width == someWidth && canvas.height == someHeight) {
+  if (canvas.width === someWidth && canvas.height === someHeight) {
     return;
   }
   canvas.width = someWidth;
@@ -178,20 +176,25 @@ function drawImageToCanvas() {
   canvas.height = loadedImage.naturalHeight;
   canvas.width = loadedImage.naturalWidth;
   switch (cropped) {
-    case true:
-      const width = canvas.width;
-      const height = canvas.height;
+    case true: {
+      const twidth = canvas.width;
+      const theight = canvas.height;
       ctx.drawImage(
         loadedImage,
         0,
         0,
-        width - (width % pixelation),
-        height - (height % pixelation),
+        twidth - (twidth % pixelation),
+        theight - (theight % pixelation),
       );
       break;
-    case false:
+    }
+    case false: {
       ctx.drawImage(loadedImage, 0, 0);
       break;
+    }
+    default: {
+      break;
+    }
   }
 }
 
@@ -212,7 +215,7 @@ function pixelateImage() {
   const imgData = ctx.getImageData(0, 0, width, height);
 
   switch (cropped) {
-    case true:
+    case true: {
       const pixelationArea = pixelation * pixelation;
       const overflowX = width % pixelation;
       const overflowY = height % pixelation;
@@ -225,7 +228,7 @@ function pixelateImage() {
           let totalR = 0;
           let totalG = 0;
           let totalB = 0;
-          let processedPixels = [];
+          const processedPixels = [];
           // Now we're looking for each pixel
           for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
             for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
@@ -255,7 +258,8 @@ function pixelateImage() {
         }
       }
       break;
-    case false:
+    }
+    case false: {
       // Try to get the corners of each "pixelation x pixelation"
       for (let y = 0; y < height; y += pixelation) {
         for (let x = 0; x < width; x += pixelation) {
@@ -263,7 +267,7 @@ function pixelateImage() {
           let totalR = 0;
           let totalG = 0;
           let totalB = 0;
-          let processedPixels = [];
+          const processedPixels = [];
           // Now we're looking for each pixel
           for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
             for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
@@ -293,6 +297,10 @@ function pixelateImage() {
         }
       }
       break;
+    }
+    default: {
+      break;
+    }
   }
   resizeCanvas(desiredWidth, desiredHeight);
   ctx.putImageData(imgData, 0, 0);
@@ -374,6 +382,7 @@ document.getElementById('largeButton').addEventListener('click', () => {
   if (saveFilePath !== undefined) {
     // If the desired resolution is not default, we'll have to draw a new canvas and resize it
     const resString = sliderElements[4].value;
+    console.log(resString);
 
     // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
     // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE
@@ -487,7 +496,12 @@ sliderElements[3].addEventListener('change', function updateCropped() {
 });
 
 // Validate if we can use the custom resolution on resolution input
-sliderElements[4].addEventListener('change', function updateResUse() {});
+sliderElements[4].addEventListener('change', function updateResUse() {
+  console.log(this.value);
+  // Debug
+  useCustomResolution = true;
+  console.log(useCustomResolution);
+});
 
 function init() {
   // Set slider size to be proportional to window
