@@ -26,6 +26,7 @@ const sliderElements = [
 let pixelation;
 let cropped;
 let useCustomResolution = false;
+let outWidth, outHeight;
 
 // Scrapped in favor of css implementation!
 // function renderImage() {
@@ -495,12 +496,31 @@ sliderElements[3].addEventListener('change', function updateCropped() {
   justExportImage();
 });
 
+// Takes a 'resolution' string, returns the width and height of the string
+// or undefined if the string is invalid
+function parseResolution(resString) {
+  if (/^\d+[xX]\d+$/.test(resString)) {
+    const t = resString.split(/[xX]/);
+    if (Number(t[0]) > 0 && Number(t[1]) > 0) {
+      return t;
+    }
+  }
+  return undefined;
+}
+
 // Validate if we can use the custom resolution on resolution input
-sliderElements[4].addEventListener('change', function updateResUse() {
-  console.log(this.value);
-  // Debug
-  useCustomResolution = true;
-  console.log(useCustomResolution);
+sliderElements[4].addEventListener('input', function updateResUse() {
+  const res = parseResolution(this.value);
+  if (res === undefined) {
+    useCustomResolution = false;
+    // this.style.backgroundColor = '#f4cccc';
+    this.style.color = '#cc0000';
+  } else {
+    useCustomResolution = true;
+    this.style.backgroundColor = 'white';
+    this.style.color = '#2b2b2b';
+    [outWidth, outHeight] = res;
+  }
 });
 
 function init() {

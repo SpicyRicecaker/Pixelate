@@ -110,10 +110,19 @@ p {
 }
 
 #resInput {
-  padding: 0;
+  padding-left: 1em;
   margin: 0;
   width: 100%;
+  height: 2em;
   font-family: 'Lemon Milk';
+  outline: none;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  border: 1.5px solid #434343;
+}
+
+#resInput:focus {
+  border: 1.5px solid #0071e3;
 }
 
 #sliderContainer {
