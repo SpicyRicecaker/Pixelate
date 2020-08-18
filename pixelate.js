@@ -28,6 +28,41 @@ let cropped;
 let useCustomResolution = false;
 let outWidth, outHeight;
 
+// Function that takes in the dimensions of two images as parameters,
+// scales one to the other by using aspect ratios,
+// then returns the dimensions of the scaled image along with dx dy
+// values needed to center that image
+function getResizedDimensions(ufwidth, ufheight, fwidth, fheight) {
+  let dwidth;
+  let dheight;
+  let scale;
+  // To figure out which way we scale the image, we need to compare the two aspect ratios
+  const ufratio = ufwidth / ufheight;
+  const fratio = fwidth / fheight;
+  // If height of fitted is greater than height of unfitted
+  if (ufratio < fratio) {
+    // If width of fitted is greater than width of unfitted
+    // Scale width of unfitted
+    dwidth = fwidth;
+    // Figure out scale of which we have increased ufwidth by
+    scale = fwidth / ufwidth;
+    // Multiply ufheight to account
+    dheight = ufheight * scale;
+  } else {
+    // Scale ufheight of image
+    dheight = fheight;
+    // Figure out scale of which we have inreased ufheight by
+    scale = fheight / ufwidth;
+    // Apply that to ufwidth as well
+    dwidth = ufwidth * scale;
+  }
+  // Find the offset dx and dy needed to center image
+  const dx = (fwidth - dwidth) / 2;
+  const dy = (fheight - dheight) / 2;
+
+  return [dwidth, dheight, dx, dy];
+}
+
 // Scrapped in favor of css implementation!
 // function renderImage() {
 //   if (loadedImage === undefined) {
@@ -131,6 +166,27 @@ function updateFileInfo() {
 
   // Time file was last modified
   document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
+}
+
+function exportImage(currentCanvas, saveFilePath) {
+  // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
+  // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE
+  // THAT A PNG IMAGE IS JUST A BASE64 STRING AND THAT YOU
+  // GOTTA REMOVE THE FILLER AND THEN YOU CAN USE IT AS DATA
+  // HAHHAHAHAHAHAHAHAHAHHAh
+  const data = currentCanvas
+    .toDataURL('image/png')
+    .replace('data:image/png;base64,', '');
+  // console.log(unloadedImage.src);
+  // console.log(data);
+  // Apparently 'new Buffer' is deprecated
+  const imageBuffer = Buffer.from(data, 'base64');
+  fs.writeFileSync(saveFilePath, imageBuffer);
+  // Write the darn file
+  // const a = document.createElement('a');
+  // a.href = canvas.toDataURL('image/jpg');
+  // a.download = 'zerozerozero.jpg';
+  // a.click();
 }
 
 // // Takes the canvas and turns it into an image
@@ -382,27 +438,28 @@ document.getElementById('largeButton').addEventListener('click', () => {
   // If a valid file path was actually named
   if (saveFilePath !== undefined) {
     // If the desired resolution is not default, we'll have to draw a new canvas and resize it
-    const resString = sliderElements[4].value;
-    console.log(resString);
-
-    // OK THIS TOOK 5 HOURS TO SEARCH BECAUSE I WAS TOO STUPID
-    // TO JUST CONSOLE.LOG(IMG.TODATAURL('IMAGE/PNG')) AND REALIZE
-    // THAT A PNG IMAGE IS JUST A BASE64 STRING AND THAT YOU
-    // GOTTA REMOVE THE FILLER AND THEN YOU CAN USE IT AS DATA
-    // HAHHAHAHAHAHAHAHAHAHHAh
-    const data = canvas
-      .toDataURL('image/png')
-      .replace('data:image/png;base64,', '');
-    // console.log(unloadedImage.src);
-    // console.log(data);
-    // Apparently 'new Buffer' is deprecated
-    const imageBuffer = Buffer.from(data, 'base64');
-    fs.writeFileSync(saveFilePath, imageBuffer);
-    // Write the darn file
-    // const a = document.createElement('a');
-    // a.href = canvas.toDataURL('image/jpg');
-    // a.download = 'zerozerozero.jpg';
-    // a.click();
+    if (useCustomResolution) {
+      // First make sure that the output canvas size is good
+      const tcanvas = document.createElement('canvas');
+      const tctx = tcanvas.getContext('2d');
+      tcanvas.width = outWidth;
+      tcanvas.height = outHeight;
+      const [dwidth, dheight, dx, dy] = getResizedDimensions();
+      tctx.drawImage(
+        canvas,
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+        dx,
+        dy,
+        dwidth,
+        dheight,
+      );
+      exportImage(tcanvas, saveFilePath);
+    } else {
+      exportImage(canvas, saveFilePath);
+    }
   }
 });
 
