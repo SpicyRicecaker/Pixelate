@@ -26,7 +26,8 @@ const sliderElements = [
 let pixelation;
 let cropped;
 let useCustomResolution = false;
-let outWidth, outHeight;
+let outWidth;
+let outHeight;
 
 // Function that takes in the dimensions of two images as parameters,
 // scales one to the other by using aspect ratios,
@@ -39,8 +40,8 @@ function getResizedDimensions(ufwidth, ufheight, fwidth, fheight) {
   // To figure out which way we scale the image, we need to compare the two aspect ratios
   const ufratio = ufwidth / ufheight;
   const fratio = fwidth / fheight;
-  // If height of fitted is greater than height of unfitted
-  if (ufratio < fratio) {
+  // If height of unfitted is greater than height of unfitted
+  if (fratio < ufratio) {
     // If width of fitted is greater than width of unfitted
     // Scale width of unfitted
     dwidth = fwidth;
@@ -52,7 +53,7 @@ function getResizedDimensions(ufwidth, ufheight, fwidth, fheight) {
     // Scale ufheight of image
     dheight = fheight;
     // Figure out scale of which we have inreased ufheight by
-    scale = fheight / ufwidth;
+    scale = fheight / ufheight;
     // Apply that to ufwidth as well
     dwidth = ufwidth * scale;
   }
@@ -365,6 +366,35 @@ function pixelateImage() {
   // Average these values, draw a full rect in its place
 }
 
+// Takes in an image and returns the average color of the image
+// as an rgb string.
+function getAverageColor() {
+  const width = loadedImage.naturalWidth;
+  const height = loadedImage.naturalHeight;
+  const imgData = ctx.getImageData(0, 0, width, height);
+  const imgLen = imgData.data.length;
+
+  let totalR = 0;
+  let totalG = 0;
+  let totalB = 0;
+  // Loop through every pixel
+  for (let i = 0; i < imgLen; i += 4) {
+    // Add the rgb values
+    totalR += imgData.data[i];
+    totalG += imgData.data[i + 1];
+    totalB += imgData.data[i + 2];
+  }
+
+  const pixels = width * height;
+
+  const averageR = totalR / pixels;
+  const averageG = totalG / pixels;
+  const averageB = totalB / pixels;
+
+  const averageColor = `rgb(${averageR}, ${averageG}, ${averageB})`;
+  return averageColor;
+}
+
 function loadDrawAndExportImage() {
   // 1. Create the canvas element (doing it globally for now)
   // canvas = document.createElement('mainPanel');
@@ -444,7 +474,19 @@ document.getElementById('largeButton').addEventListener('click', () => {
       const tctx = tcanvas.getContext('2d');
       tcanvas.width = outWidth;
       tcanvas.height = outHeight;
-      const [dwidth, dheight, dx, dy] = getResizedDimensions();
+      // Now we can draw the dominant color as the background
+
+      tctx.beginPath();
+      tctx.fillStyle = `${getAverageColor()}`;
+      tctx.fillRect(0, 0, outWidth, outHeight);
+      tctx.closePath();
+
+      const [dwidth, dheight, dx, dy] = getResizedDimensions(
+        canvas.width,
+        canvas.height,
+        tcanvas.width,
+        tcanvas.height,
+      );
       tctx.drawImage(
         canvas,
         0,
