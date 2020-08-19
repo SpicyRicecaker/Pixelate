@@ -1,77 +1,94 @@
 <!DOCTYPE html lang="en">
-
-<head>
+<html>
+  <head>
     <title>Pixelate</title>
     <!-- font-family: 'Open Sans', sans-serif; -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
 
-<body>
+  <body>
     <div class="wrapper">
-        <input type="button" id="smallButton" value="Load File">
-        <div class="loadFile">
-            <h2>
-                Drop File!
-            </h2>
+      <input type="button" id="smallButton" value="Load File" />
+      <div class="loadFile">
+        <h2>
+          Drop File!
+        </h2>
+      </div>
+      <div id="container">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div id="pixelation">
+        <h2>
+          Pixelation!
+        </h2>
+        <div id="sliderContainer">
+          <div id="box"></div>
+          <input type="range" min="1" max="99" id="pixelationSlider" />
         </div>
-        <div id="container">
-            <canvas id="canvas">
+      </div>
+      <div class="fileInfo">
+        <h2>
+          File Info!
+        </h2>
+        <h3>Name:</h3>
+        <p id="dd_name">N/A</p>
+        <h3>Path:</h3>
+        <p id="dd_path">N/A</p>
+        <h3>Dimensions:</h3>
+        <p id="dd_dimensions">N/A</p>
+        <h3>Size:</h3>
+        <p id="dd_size">N/A</p>
+        <h3>File Type:</h3>
+        <p id="dd_fileType">N/A</p>
+        <h3>Last Modified:</h3>
+        <p id="dd_lastModified">N/A</p>
+      </div>
+      <div class="outputResolution">
+        <h2>
+          Custom Res!
+        </h2>
+        <div id="resContainer">
+          <input
+            id="resInput"
+            type="text"
+            list="resolutions"
+            placeholder='E.g. "68x96"'
+            spellcheck="false"
+          />
+          <datalist id="resolutions">
+            <option value="720x480">SD</option>
+            <option value="1280x720">HD</option>
+            <option value="1920x1080">FHD</option>
+            <option value="2560x1440">WQHD</option>
+            <option value="3840x2160">UHD</option>
+          </datalist>
         </div>
-        <div id="pixelation">
-            <h2>
-                Pixelation!
-            </h2>
-            <div id="sliderContainer">
-                <div id="box"></div>
-                <input type="range" min="1" max="99" id="pixelationSlider">
-            </div>
+        <div id="checkContainer">
+          <input type="checkbox" value="crop" id="cropCheck" />
+          <label for="cropCheck">Crop</label>
         </div>
-        <div class="fileInfo">
-            <h2>
-                File Info!
-            </h2>
-            <h3>Name:</h3>
-            <p id="dd_name"> N/A</p>
-            <h3>Path:</h3>
-            <p id="dd_path"> N/A</p>
-            <h3>Dimensions:</h3>
-            <p id="dd_dimensions"> N/A</p>
-            <h3>Size:</h3>
-            <p id="dd_size"> N/A</p>
-            <h3>File Type:</h3>
-            <p id="dd_fileType"> N/A</p>
-            <h3>Last Modified:</h3>
-            <p id="dd_lastModified"> N/A</p>
-        </div>
-        <div class="outputResolution">
-            <h2>
-                Custom Res!
-            </h2>
-            <div id="resContainer">
-                <input id="resInput" type="text" list="resolutions" placeholder='E.g. "68x96"'spellcheck="false"/>
-                <datalist id="resolutions">
-                    <option value="720x480">SD</optionD>
-                    <option value="1280x720">HD</option>
-                    <option value="1920x1080">FHD</option>
-                    <option value="2560x1440">WQHD</option>
-                    <option value="3840x2160">UHD</option>
-                </datalist>
-            </div>
-            <div id="checkContainer">
-                <input type="checkbox" value="crop" id="cropCheck">
-                <label for="cropCheck">Crop</label>
-            </div>
-            <h2 id="algoHeader">
-                Algorithm
-            </h2>
-            <input type="radio" id="avg" name="algo" value="avg" checked="checked">
-            <label for="avg">Avg</label>
-            <input type="radio" id="top" name="algo" value="top">
-            <label for="top">Top</label>
-        </div>
-        <input type="button" id="largeButton" value="Save File">
+        <h2 id="algoHeader">
+          Algorithm
+        </h2>
+        <form name="algoForm">
+          <input
+            type="radio"
+            id="avg"
+            name="algo"
+            value="avg"
+            checked="checked"
+          />
+          <label for="avg">Avg</label>
+          <input type="radio" id="top" name="algo" value="top" />
+          <label for="top">Top</label>
+        </form>
+      </div>
+      <input type="button" id="largeButton" value="Save File" />
     </div>
     <script src="pixelate.js"></script>
-</body>
+  </body>
 </html>

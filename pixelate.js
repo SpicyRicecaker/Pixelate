@@ -28,6 +28,7 @@ let cropped;
 let useCustomResolution = false;
 let outWidth;
 let outHeight;
+let algo = 'avg';
 
 // Function that takes in the dimensions of two images as parameters,
 // scales one to the other by using aspect ratios,
@@ -272,86 +273,167 @@ function pixelateImage() {
   // Get rgb data of every single pixel in the image, .data removes some other info
   const imgData = ctx.getImageData(0, 0, width, height);
 
-  switch (cropped) {
-    case true: {
-      const pixelationArea = pixelation * pixelation;
-      const overflowX = width % pixelation;
-      const overflowY = height % pixelation;
-      desiredWidth = width - overflowX;
-      desiredHeight = height - overflowY;
-      // Try to get the corners of each "pixelation x pixelation"
-      for (let y = 0; y < desiredHeight; y += pixelation) {
-        for (let x = 0; x < desiredWidth; x += pixelation) {
-          // Let's define the average values that we'll use later
-          let totalR = 0;
-          let totalG = 0;
-          let totalB = 0;
-          const processedPixels = [];
-          // Now we're looking for each pixel
-          for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
-            for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
-              // Now we're looking for the arrayLocation of each value of each pixel
-              const pixelX = x + sampleX;
-              const pixelY = y + sampleY;
-              // if (pixelX >= width || pixelY >= height) {
-              //   break;
-              // }
-              const p = (pixelY * width + pixelX) * 4;
-              totalR += imgData.data[p];
-              totalG += imgData.data[p + 1];
-              totalB += imgData.data[p + 2];
-              processedPixels.push(p);
+  // Decide on which algorithm we are using
+  switch (algo) {
+    case 'top': {
+      // If we're using the cropped algorithm
+      // All we have to do is recognize the color of the topleft pixel
+      switch (cropped) {
+        case true: {
+          const overflowX = width % pixelation;
+          const overflowY = height % pixelation;
+          desiredWidth = width - overflowX;
+          desiredHeight = height - overflowY;
+          // Target each corner of each "pixelation x pixelation"
+          for (let y = 0; y < desiredHeight; y += pixelation) {
+            for (let x = 0; x < desiredWidth; x += pixelation) {
+              // Record the rgb values of the topleft pixel
+              const tp = (y * width + x) * 4;
+              const topR = imgData.data[tp];
+              const topG = imgData.data[tp + 1];
+              const topB = imgData.data[tp + 2];
+              // Now loop through the sample area square and replace the
+              // rgb values with the topleft pixel
+              for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+                for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+                  // Now we're looking for the arrayLocation of each value of each pixel
+                  const pixelX = x + sampleX;
+                  const pixelY = y + sampleY;
+                  const p = (pixelY * width + pixelX) * 4;
+                  imgData.data[p] = topR;
+                  imgData.data[p + 1] = topG;
+                  imgData.data[p + 2] = topB;
+                }
+              }
             }
           }
-          const averageR = totalR / pixelationArea;
-          const averageG = totalG / pixelationArea;
-          const averageB = totalB / pixelationArea;
-          // console.log('the averages are', averageR, averageG, averageB);
-          for (let i = 0; i < processedPixels.length; i += 1) {
-            const p = processedPixels[i];
-            imgData.data[p] = averageR;
-            imgData.data[p + 1] = averageG;
-            imgData.data[p + 2] = averageB;
+          break;
+        }
+        case false: {
+          // In the case of false all we have to do is account for the borders
+          // very simple
+          for (let y = 0; y < height; y += pixelation) {
+            for (let x = 0; x < width; x += pixelation) {
+              // Record the rgb values of the topleft pixel
+              const tp = (y * width + x) * 4;
+              const topR = imgData.data[tp];
+              const topG = imgData.data[tp + 1];
+              const topB = imgData.data[tp + 2];
+              // Now loop through the sample area square and replace the
+              // rgb values with the topleft pixel
+              for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+                for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+                  // Now we're looking for the arrayLocation of each value of each pixel
+                  const pixelX = x + sampleX;
+                  const pixelY = y + sampleY;
+                  // Here we just break off if we're out of bounds
+                  if (pixelX >= width || pixelY >= height) {
+                    break;
+                  }
+                  const p = (pixelY * width + pixelX) * 4;
+                  imgData.data[p] = topR;
+                  imgData.data[p + 1] = topG;
+                  imgData.data[p + 2] = topB;
+                }
+              }
+            }
           }
+          break;
+        }
+        default: {
+          break;
         }
       }
       break;
     }
-    case false: {
-      // Try to get the corners of each "pixelation x pixelation"
-      for (let y = 0; y < height; y += pixelation) {
-        for (let x = 0; x < width; x += pixelation) {
-          // Let's define the average values that we'll use later
-          let totalR = 0;
-          let totalG = 0;
-          let totalB = 0;
-          const processedPixels = [];
-          // Now we're looking for each pixel
-          for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
-            for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
-              // Now we're looking for the arrayLocation of each value of each pixel
-              const pixelX = x + sampleX;
-              const pixelY = y + sampleY;
-              if (pixelX >= width || pixelY >= height) {
-                break;
+    case 'avg': {
+      // Decide on which algorithm we are using
+      switch (cropped) {
+        case true: {
+          const pixelationArea = pixelation * pixelation;
+          const overflowX = width % pixelation;
+          const overflowY = height % pixelation;
+          desiredWidth = width - overflowX;
+          desiredHeight = height - overflowY;
+          // Try to get the corners of each "pixelation x pixelation"
+          for (let y = 0; y < desiredHeight; y += pixelation) {
+            for (let x = 0; x < desiredWidth; x += pixelation) {
+              // Let's define the average values that we'll use later
+              let totalR = 0;
+              let totalG = 0;
+              let totalB = 0;
+              const processedPixels = [];
+              // Now we're looking for each pixel
+              for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+                for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+                  // Now we're looking for the arrayLocation of each value of each pixel
+                  const pixelX = x + sampleX;
+                  const pixelY = y + sampleY;
+                  // if (pixelX >= width || pixelY >= height) {
+                  //   break;
+                  // }
+                  const p = (pixelY * width + pixelX) * 4;
+                  totalR += imgData.data[p];
+                  totalG += imgData.data[p + 1];
+                  totalB += imgData.data[p + 2];
+                  processedPixels.push(p);
+                }
               }
-              const p = (pixelY * width + pixelX) * 4;
-              totalR += imgData.data[p];
-              totalG += imgData.data[p + 1];
-              totalB += imgData.data[p + 2];
-              processedPixels.push(p);
+              const averageR = totalR / pixelationArea;
+              const averageG = totalG / pixelationArea;
+              const averageB = totalB / pixelationArea;
+              // console.log('the averages are', averageR, averageG, averageB);
+              for (let i = 0; i < processedPixels.length; i += 1) {
+                const p = processedPixels[i];
+                imgData.data[p] = averageR;
+                imgData.data[p + 1] = averageG;
+                imgData.data[p + 2] = averageB;
+              }
             }
           }
-          const l = processedPixels.length;
-          const averageR = totalR / l;
-          const averageG = totalG / l;
-          const averageB = totalB / l;
-          for (let i = 0; i < l; i += 1) {
-            const p = processedPixels[i];
-            imgData.data[p] = averageR;
-            imgData.data[p + 1] = averageG;
-            imgData.data[p + 2] = averageB;
+          break;
+        }
+        case false: {
+          // Try to get the corners of each "pixelation x pixelation"
+          for (let y = 0; y < height; y += pixelation) {
+            for (let x = 0; x < width; x += pixelation) {
+              // Let's define the average values that we'll use later
+              let totalR = 0;
+              let totalG = 0;
+              let totalB = 0;
+              const processedPixels = [];
+              // Now we're looking for each pixel
+              for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
+                for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
+                  // Now we're looking for the arrayLocation of each value of each pixel
+                  const pixelX = x + sampleX;
+                  const pixelY = y + sampleY;
+                  if (pixelX >= width || pixelY >= height) {
+                    break;
+                  }
+                  const p = (pixelY * width + pixelX) * 4;
+                  totalR += imgData.data[p];
+                  totalG += imgData.data[p + 1];
+                  totalB += imgData.data[p + 2];
+                  processedPixels.push(p);
+                }
+              }
+              const l = processedPixels.length;
+              const averageR = totalR / l;
+              const averageG = totalG / l;
+              const averageB = totalB / l;
+              for (let i = 0; i < l; i += 1) {
+                const p = processedPixels[i];
+                imgData.data[p] = averageR;
+                imgData.data[p + 1] = averageG;
+                imgData.data[p + 2] = averageB;
+              }
+            }
           }
+          break;
+        }
+        default: {
+          break;
         }
       }
       break;
@@ -362,10 +444,10 @@ function pixelateImage() {
   }
   resizeCanvas(desiredWidth, desiredHeight);
   ctx.putImageData(imgData, 0, 0);
-  // Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
-  // Average these values, draw a full rect in its place
 }
 
+// Traverse a [pixelation]x[pixelation] array of the entire [width]x[height]
+// Average these values, draw a full rect in its place
 // Takes in an image and returns the average color of the image
 // as an rgb string.
 function getAverageColor() {
@@ -621,6 +703,24 @@ sliderElements[4].addEventListener('input', function updateResUse() {
     [outWidth, outHeight] = res;
   }
 });
+
+// Updates the value of algo to match that of the selected radio
+// option and redraws the image based off of that
+function updateAlgo(radio) {
+  algo = radio.value;
+  justExportImage();
+}
+
+// Action listeners to buttons. Apparently you can't define
+// a function inside a for loop that references variables
+// of a greater scope because of some weird events happening...
+// so I defined update algo in another function and used an
+// arrow function to call to it since that's how you can pass
+// parameters in
+const radios = document.forms.algoForm.elements.algo;
+for (let z = 0; z < radios.length; z += 1) {
+  radios[z].addEventListener('change', () => updateAlgo(radios[z]));
+}
 
 function init() {
   // Set slider size to be proportional to window
