@@ -160,6 +160,11 @@ p {
   height: 1em;
 }
 
+#algoHeader {
+  margin: 0.5em 0;
+  padding: 0;
+}
+
 #box {
   position: absolute;
   font-size: 10vw;
