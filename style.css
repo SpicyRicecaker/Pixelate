@@ -186,9 +186,6 @@ p {
   opacity: 1;
 }
 
-#pixelationSlider::-webkit-slider-runnable-track {
-}
-
 /* The handle/part you can drag of slider*/
 #pixelationSlider::-webkit-slider-thumb {
   /* Overrides the default styling */

@@ -1,11 +1,25 @@
 {
   "name": "pixelate",
   "version": "1.0.0",
-  "description": "\u0016An app that pixelates an image",
+  "description": "An app that pixelates an image",
   "main": "main.js",
+  "build": {
+    "appId": "io.github.spicyricecaker.app",
+    "productName": "Pixelate",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "repository": {
     "type": "git",
@@ -25,6 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
     "electron": "^9.2.0",
+    "electron-builder": "^22.8.0",
     "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",

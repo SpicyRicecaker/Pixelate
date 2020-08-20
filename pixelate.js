@@ -732,6 +732,7 @@ document.getElementById('loadFile').addEventListener('drop', (event) => {
   const acceptedExtensions = /(jpg|jpeg|png)/i;
   // Loop through the file paths of all files added
   for (let i = 0; i < event.dataTransfer.files.length; i += 1) {
+    document.getElementById('loadFile').style.borderColor = '#434343';
     const tFilePath = event.dataTransfer.files[i].path;
     // const fileName = path.basename(tFilePath);
     // const fileExtension = fileName.split('.').pop();
