@@ -134,14 +134,13 @@ function resizeCanvas(someWidth, someHeight) {
 
 function updateFileInfo() {
   // Get actual file path as string
-  const fileName = filePath[0];
 
   // Get & set file name
-  const ddName = path.basename(fileName);
+  const ddName = path.basename(filePath);
   document.getElementById('dd_name').innerHTML = ddName;
 
   // Set path string
-  document.getElementById('dd_path').innerHTML = fileName;
+  document.getElementById('dd_path').innerHTML = filePath;
 
   // Image dimensions can be gathered from image
   document.getElementById(
@@ -157,7 +156,7 @@ function updateFileInfo() {
   // Template: preset format
   // Literal: value written as exactly as it's meant to be interpreted
   // Interpolation: The insertion of something of a different nature into something else
-  const fileStats = fs.statSync(fileName);
+  const fileStats = fs.statSync(filePath);
   document.getElementById('dd_size').innerHTML = `${roundTo(
     fileStats.size / 1000000,
     100,
@@ -617,10 +616,11 @@ document.getElementById('smallButton').addEventListener(
     };
     // Show window popup dialog
     // Retreve string of file, that is a image file type
-    filePath = dialog.showOpenDialogSync(options);
+    const tFilePath = dialog.showOpenDialogSync(options);
 
     // If a file was actually retrieved
-    if (filePath !== undefined) {
+    if (tFilePath !== undefined) {
+      [filePath] = tFilePath;
       // Load the image onto the window (so that it can be loaded
       // Onto the canvas)
       // Draw it on an invisible canvas (so that the pixels on the
@@ -721,6 +721,44 @@ const radios = document.forms.algoForm.elements.algo;
 for (let z = 0; z < radios.length; z += 1) {
   radios[z].addEventListener('change', () => updateAlgo(radios[z]));
 }
+
+document.getElementById('loadFile').addEventListener('drop', (event) => {
+  // Required to override default browser behavior on file drop
+  // (i.e.) open new tab
+  event.preventDefault();
+  event.stopPropagation();
+
+  // Regex matching our accepted extensions
+  const acceptedExtensions = /(jpg|jpeg|png)/i;
+  // Loop through the file paths of all files added
+  for (let i = 0; i < event.dataTransfer.files.length; i += 1) {
+    const tFilePath = event.dataTransfer.files[i].path;
+    // const fileName = path.basename(tFilePath);
+    // const fileExtension = fileName.split('.').pop();
+    // Test if the file extension matches
+    if (acceptedExtensions.test(path.basename(tFilePath).split('.').pop())) {
+      // If we're dropping a different file from the image we already have
+      if (filePath !== tFilePath) {
+        // Update file path
+        filePath = tFilePath;
+        // Export it!
+        loadDrawAndExportImage();
+        break;
+      }
+    }
+  }
+});
+document.getElementById('loadFile').addEventListener('dragover', (event) => {
+  // Required to actually process a drop
+  event.preventDefault();
+  event.stopPropagation();
+});
+document.getElementById('loadFile').addEventListener('dragenter', () => {
+  document.getElementById('loadFile').style.borderColor = '#0071e3';
+});
+document.getElementById('loadFile').addEventListener('dragleave', () => {
+  document.getElementById('loadFile').style.borderColor = '#434343';
+});
 
 function init() {
   // Set slider size to be proportional to window

@@ -71,11 +71,16 @@ p {
   /* text-align: center; */
 }
 
-.loadFile {
+#loadFile {
   grid-area: loadfile;
   /* Top left bottom right */
   /* Top/Bottom Left/Right */
   padding: 0 1em;
+
+  /* Border */
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  border: 1.5px solid #434343;
 }
 
 .fileInfo {
