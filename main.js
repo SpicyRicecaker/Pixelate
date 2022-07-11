@@ -1,4 +1,12 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+
+ipcMain.handle("showSaveDialogSync", async (event, arg) => {
+  return await dialog.showSaveDialogSync(arg);
+})
+
+ipcMain.handle("showOpenDialogSync", async (event, arg) => {
+  return await dialog.showOpenDialogSync(arg);
+})
 
 function createWindow() {
   // Makes the browser window
@@ -9,6 +17,10 @@ function createWindow() {
     minHeight: 720,
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      nodeIntegrationInSubFrames: true,
+      enableRemoteModule: true,
+      contextIsolation: false
     },
   });
 
