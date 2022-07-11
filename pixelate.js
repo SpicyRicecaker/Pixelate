@@ -10,7 +10,7 @@ const fs = require('fs');
 // Path required for some things...
 const path = require('path');
 // Dialog, for file explorer, .remote at the end if not in main
-const { dialog } = require('electron').remote;
+const { ipcRenderer } = require('electron');
 // Loaded filepath
 let filePath;
 // Actual loaded image
@@ -498,7 +498,7 @@ function loadDrawAndExportImage() {
 }
 // When the user clicks on the save file button, open a dialog
 // and save the current image
-document.getElementById('largeButton').addEventListener('click', () => {
+document.getElementById('largeButton').addEventListener('click', async () => {
   const options = {
     title: 'Save File',
     buttonLabel: 'Save File',
@@ -545,7 +545,8 @@ document.getElementById('largeButton').addEventListener('click', () => {
   */
 
   // Retrieve the file path to save something to
-  const saveFilePath = dialog.showSaveDialogSync(options);
+  const saveFilePath = await ipcRenderer.invoke("showSaveDialogSync", options);
+  
   // If a valid file path was actually named
   if (saveFilePath !== undefined) {
     // If the desired resolution is not default, we'll have to draw a new canvas and resize it
@@ -590,7 +591,7 @@ document.getElementById('largeButton').addEventListener('click', () => {
 // and load the image
 document.getElementById('smallButton').addEventListener(
   'click',
-  () => {
+  async () => {
     // Options that can configure the file explorer window
     // The "let" keyword makes it so that the variable has a limited scope and expires
     const options = {
@@ -616,7 +617,7 @@ document.getElementById('smallButton').addEventListener(
     };
     // Show window popup dialog
     // Retreve string of file, that is a image file type
-    const tFilePath = dialog.showOpenDialogSync(options);
+    const tFilePath = await ipcRenderer.invoke("showOpenDialogSync", options);
 
     // If a file was actually retrieved
     if (tFilePath !== undefined) {

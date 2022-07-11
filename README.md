@@ -1,4 +1,17 @@
 # Pixelate
+
+## Development
+
+Clone repository, install dependencies, then run the app
+
+```shell
+git clone https://github.com/SpicyRicecaker/Pixelate.git
+bun install
+bun start
+```
+
+## Rant
+
 An app that pixelates an image
 
 Windows x64 download!:
