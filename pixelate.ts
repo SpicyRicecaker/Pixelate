@@ -654,6 +654,7 @@ sliderElements[1].addEventListener('input', function updatePixelation() {
   pixelation = Number(this.value);
   this.style.background = `linear-gradient(to right, #ffd966 0%, #ffd966 ${pixelation}%, #fff ${pixelation}%, white 100%)`;
   sliderElements[2].innerHTML = pixelation;
+  justExportImage();
 });
 
 function justExportImage() {
@@ -669,7 +670,7 @@ function justExportImage() {
 
 // Adding an event triggered when value of slider is changed
 sliderElements[1].addEventListener('change', () => {
-  justExportImage();
+  // justExportImage();
 });
 
 // Adding an event triggered when the value of checkbox is changed
