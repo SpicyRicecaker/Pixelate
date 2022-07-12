@@ -1,8 +1,6 @@
-// let width;
-// let height;
 // Canvas
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 ctx.imageSmoothingEnabled = false;
 // Other specifications here
 // Node js filesystem
@@ -16,13 +14,19 @@ let filePath;
 // Actual loaded image
 let loadedImage;
 // Some document stuff to store
-const sliderElements = [
-  document.getElementById('sliderContainer'), // 0
-  document.getElementById('pixelationSlider'), // 1
-  document.getElementById('box'), // 2
-  document.getElementById('cropCheck'), // 3
-  document.getElementById('resInput'), // 4
-];
+
+interface ElectronFile extends File {
+  path: string
+}
+
+const pixelationOptions = {
+  'slider container': document.getElementById('sliderContainer')!, // 0
+  'pixelation slider': document.getElementById('pixelationSlider') as HTMLInputElement, // 1
+  'box': document.getElementById('box')!, // 2
+  'crop': document.getElementById('cropCheck') as HTMLInputElement, // 3
+  'resolution input': document.getElementById('resInput') as HTMLInputElement, // 4
+};
+
 let pixelation;
 let cropped;
 let useCustomResolution = false;
@@ -137,15 +141,15 @@ function updateFileInfo() {
 
   // Get & set file name
   const ddName = path.basename(filePath);
-  document.getElementById('dd_name').innerHTML = ddName;
+  document.getElementById('dd_name')!.innerHTML = ddName;
 
   // Set path string
-  document.getElementById('dd_path').innerHTML = filePath;
+  document.getElementById('dd_path')!.innerHTML = filePath;
 
   // Image dimensions can be gathered from image
   document.getElementById(
     'dd_dimensions',
-  ).innerHTML = `${loadedImage.naturalWidth} x ${loadedImage.naturalHeight}`;
+  )!.innerHTML = `${loadedImage.naturalWidth} x ${loadedImage.naturalHeight}`;
 
   // Size of file
   // `${fileSizeInMB} MB` is known as a 'template literal'. Template literals allow for
@@ -157,16 +161,16 @@ function updateFileInfo() {
   // Literal: value written as exactly as it's meant to be interpreted
   // Interpolation: The insertion of something of a different nature into something else
   const fileStats = fs.statSync(filePath);
-  document.getElementById('dd_size').innerHTML = `${roundTo(
+  document.getElementById('dd_size')!.innerHTML = `${roundTo(
     fileStats.size / 1000000,
     100,
   )} MB`;
 
   // Type of file
-  document.getElementById('dd_fileType').innerHTML = ddName.split('.').pop();
+  document.getElementById('dd_fileType')!.innerHTML = ddName.split('.').pop();
 
   // Time file was last modified
-  document.getElementById('dd_lastModified').innerHTML = fileStats.mtime;
+  document.getElementById('dd_lastModified')!.innerHTML = fileStats.mtime;
 }
 
 function exportImage(currentCanvas, saveFilePath) {
@@ -189,44 +193,6 @@ function exportImage(currentCanvas, saveFilePath) {
   // a.download = 'zerozerozero.jpg';
   // a.click();
 }
-
-// // Takes the canvas and turns it into an image
-// function exportImage() {
-//   return;
-
-//   unloadedImage = new Image();
-//   unloadedImage.onload = function onDisplayImage() {
-//     // Now we need to resize this image to fit the container???
-//     // resizeImage();
-//     unloadedImage.setAttribute('id', 'panelImage');
-//     // 2.5. Remove the previous pic!
-//     document.getElementById('panelImage').remove();
-//     // Add it to the darn docccc!!!
-//     document.getElementById('container').appendChild(unloadedImage);
-//   };
-//   // Match output source to image
-//   // let fileType;
-//   // switch (getFileType(filePath)) {
-//   //   case 'png':
-//   //     fileType = 'png';
-//   //     break;
-//   //   case 'jpg':
-//   //     fileType = 'jpg';
-//   //     break;
-//   //   case 'jpeg':
-//   //     fileType = 'jpeg';
-//   //     break;
-//   //   default:
-//   //     console.log('Sorry, a program error occured');
-//   //     return;
-//   // }
-//   // --Export to image file!~
-//   // unloadedImage.src = canvas.toDataURL(`image/${fileType}`);
-
-//   // Since we are pixelating the file, a png makes 1000 times
-//   // more sense lol
-//   unloadedImage.src = canvas.toDataURL('image/png');
-// }
 
 function drawImageToCanvas() {
   // Set canvas size to, of course, match image size (entire
@@ -361,7 +327,7 @@ function pixelateImage() {
               let totalR = 0;
               let totalG = 0;
               let totalB = 0;
-              const processedPixels = [];
+              const processedPixels: number[] = [];
               // Now we're looking for each pixel
               for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
                 for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
@@ -400,7 +366,7 @@ function pixelateImage() {
               let totalR = 0;
               let totalG = 0;
               let totalB = 0;
-              const processedPixels = [];
+              const processedPixels: number[] = [];
               // Now we're looking for each pixel
               for (let sampleY = 0; sampleY < pixelation; sampleY += 1) {
                 for (let sampleX = 0; sampleX < pixelation; sampleX += 1) {
@@ -498,7 +464,7 @@ function loadDrawAndExportImage() {
 }
 // When the user clicks on the save file button, open a dialog
 // and save the current image
-document.getElementById('largeButton').addEventListener('click', async () => {
+document.getElementById('largeButton')!.addEventListener('click', async () => {
   const options = {
     title: 'Save File',
     buttonLabel: 'Save File',
@@ -552,8 +518,8 @@ document.getElementById('largeButton').addEventListener('click', async () => {
     // If the desired resolution is not default, we'll have to draw a new canvas and resize it
     if (useCustomResolution) {
       // First make sure that the output canvas size is good
-      const tcanvas = document.createElement('canvas');
-      const tctx = tcanvas.getContext('2d');
+      const tcanvas = document.createElement('canvas') as HTMLCanvasElement;
+      const tctx = tcanvas.getContext('2d') as CanvasRenderingContext2D;
       tcanvas.width = outWidth;
       tcanvas.height = outHeight;
       // Now we can draw the dominant color as the background
@@ -589,7 +555,7 @@ document.getElementById('largeButton').addEventListener('click', async () => {
 
 // When the user clicks on the load file button, open a dialog
 // and load the image
-document.getElementById('smallButton').addEventListener(
+document.getElementById('smallButton')!.addEventListener(
   'click',
   async () => {
     // Options that can configure the file explorer window
@@ -643,17 +609,17 @@ document.getElementById('smallButton').addEventListener(
 );
 // False at the end, something about events only called on bubbling up case... false by default idk
 function updateSliderSize() {
-  sliderElements[1].style.width = sliderElements[0].offsetHeight * 0.8;
+  pixelationOptions['pixelation slider'].style.width = `${pixelationOptions['slider container'].offsetHeight * 0.8}`;
 }
 
 window.addEventListener('resize', () => {
   updateSliderSize();
 });
 
-sliderElements[1].addEventListener('input', function updatePixelation() {
+pixelationOptions['pixelation slider'].addEventListener('input', function updatePixelation() {
   pixelation = Number(this.value);
   this.style.background = `linear-gradient(to right, #ffd966 0%, #ffd966 ${pixelation}%, #fff ${pixelation}%, white 100%)`;
-  sliderElements[2].innerHTML = pixelation;
+  pixelationOptions['box'].innerHTML = pixelation;
   justExportImage();
 });
 
@@ -669,12 +635,12 @@ function justExportImage() {
 }
 
 // Adding an event triggered when value of slider is changed
-sliderElements[1].addEventListener('change', () => {
+pixelationOptions['pixelation slider'].addEventListener('change', () => {
   // justExportImage();
 });
 
 // Adding an event triggered when the value of checkbox is changed
-sliderElements[3].addEventListener('change', function updateCropped() {
+pixelationOptions['crop'].addEventListener('change', function updateCropped() {
   cropped = this.checked;
   justExportImage();
 });
@@ -692,7 +658,7 @@ function parseResolution(resString) {
 }
 
 // Validate if we can use the custom resolution on resolution input
-sliderElements[4].addEventListener('input', function updateResUse() {
+pixelationOptions['resolution input'].addEventListener('input', function updateResUse() {
   const res = parseResolution(this.value);
   if (res === undefined) {
     useCustomResolution = false;
@@ -719,31 +685,29 @@ function updateAlgo(radio) {
 // so I defined update algo in another function and used an
 // arrow function to call to it since that's how you can pass
 // parameters in
-const radios = document.forms.algoForm.elements.algo;
+const radios = document.forms['algoForm'].elements.algo;
 for (let z = 0; z < radios.length; z += 1) {
   radios[z].addEventListener('change', () => updateAlgo(radios[z]));
 }
 
-document.getElementById('loadFile').addEventListener('drop', (event) => {
+document.getElementById('loadFile')!.addEventListener('drop', (event: DragEvent) => {
   // Required to override default browser behavior on file drop
   // (i.e.) open new tab
   event.preventDefault();
   event.stopPropagation();
 
   // Regex matching our accepted extensions
-  const acceptedExtensions = /(jpg|jpeg|png)/i;
+  const acceptedExtensions = /image\/(jpg|jpeg|png)/i;
   // Loop through the file paths of all files added
-  for (let i = 0; i < event.dataTransfer.files.length; i += 1) {
-    document.getElementById('loadFile').style.borderColor = '#434343';
-    const tFilePath = event.dataTransfer.files[i].path;
-    // const fileName = path.basename(tFilePath);
-    // const fileExtension = fileName.split('.').pop();
+  const files = event.dataTransfer!.files;
+  for (let i = 0; i < files.length; i++) {
+    document.getElementById('loadFile')!.style.borderColor = '#434343';
     // Test if the file extension matches
-    if (acceptedExtensions.test(path.basename(tFilePath).split('.').pop())) {
+    if (acceptedExtensions.test(files[i].type)) {
       // If we're dropping a different file from the image we already have
-      if (filePath !== tFilePath) {
+      if (filePath !== ((files[i] as ElectronFile).path)) {
         // Update file path
-        filePath = tFilePath;
+        filePath = (files[i] as ElectronFile).path;
         // Export it!
         loadDrawAndExportImage();
         break;
@@ -751,16 +715,18 @@ document.getElementById('loadFile').addEventListener('drop', (event) => {
     }
   }
 });
-document.getElementById('loadFile').addEventListener('dragover', (event) => {
+
+const loadFile = document.getElementById('loadFile')!;
+loadFile.addEventListener('dragover', (event) => {
   // Required to actually process a drop
   event.preventDefault();
   event.stopPropagation();
 });
-document.getElementById('loadFile').addEventListener('dragenter', () => {
-  document.getElementById('loadFile').style.borderColor = '#0071e3';
+loadFile.addEventListener('dragenter', () => {
+  loadFile.style.borderColor = '#0071e3';
 });
-document.getElementById('loadFile').addEventListener('dragleave', () => {
-  document.getElementById('loadFile').style.borderColor = '#434343';
+loadFile.addEventListener('dragleave', () => {
+ loadFile.style.borderColor = '#434343';
 });
 
 function init() {
@@ -768,10 +734,10 @@ function init() {
   updateSliderSize();
   // Initialize value of slider to be 1 and set everything equal to it
   pixelation = 1;
-  sliderElements[1].value = pixelation;
-  sliderElements[2].innerHTML = pixelation;
+  pixelationOptions['pixelation slider'].value = pixelation;
+  pixelationOptions['box'].innerHTML = pixelation;
   // Initialize value of checkbox
-  cropped = sliderElements[3].checked;
+  cropped = pixelationOptions['crop'].checked;
 }
 
 init();
