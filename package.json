@@ -2,7 +2,7 @@
   "name": "pixelate",
   "version": "1.0.0",
   "description": "An app that pixelates an image",
-  "main": "main.js",
+  "main": "main.ts",
   "build": {
     "appId": "io.github.spicyricecaker.app",
     "productName": "Pixelate",
